@@ -1,0 +1,20 @@
+<Solution>
+  <Folder Name="/Capability/">
+    <Project Path="MetaView.Capability.AlgorithmProcessing/MetaView.Capabilities.Algorithms.csproj" />
+    <Project Path="MetaView.Capability.DaqAndPreprocessing/MetaView.Capabilities.DataAcquisition.csproj" />
+    <Project Path="MetaView.Capability.ImageAcquisition/MetaView.Capabilities.Imaging.csproj" />
+    <Project Path="MetaView.Capability.LaserSource/MetaView.Capabilities.LaserControl.csproj" />
+    <Project Path="MetaView.Capability.MotionControl/MetaView.Capabilities.MotionControl.csproj" />
+    <Project Path="MetaView.Capability.ParameterManagement/MetaView.Capabilities.Parameters.csproj" />
+    <Project Path="MetaView.Capability.PhotoDetect/MetaView.Capabilities.PhotoDetection.csproj" Id="b9cbeffd-35b0-42ef-9861-83c08bfd2b32" />
+    <Project Path="MetaView.Capability.ReportManagement/MetaView.Capabilities.Reporting.csproj" />
+  </Folder>
+  <Folder Name="/Core/">
+    <Project Path="MetaView.Core/MetaView.Core.csproj" />
+  </Folder>
+  <Folder Name="/Services/">
+    <Project Path="MetaView.Services.Interfaces/MetaView.Services.Abstractions.csproj" />
+    <Project Path="MetaView.Services/MetaView.Services.csproj" />
+  </Folder>
+  <Project Path="MetaView/MetaView.csproj" />
+</Solution>
