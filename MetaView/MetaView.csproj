@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Prism.DryIoc" Version="9.0.537" />
+    <PackageReference Include="Prism.Wpf" Version="9.0.537" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Foundation\Vibronix.Presentation.Wpf.Plot\Vibronix.Presentation.Wpf.Plot.csproj" />
+    <ProjectReference Include="..\MetaView.Capability.AlgorithmProcessing\MetaView.Capabilities.Algorithms.csproj" />
+    <ProjectReference Include="..\MetaView.Capability.DaqAndPreprocessing\MetaView.Capabilities.DataAcquisition.csproj" />
+    <ProjectReference Include="..\MetaView.Capability.ImageAcquisition\MetaView.Capabilities.Imaging.csproj" />
+    <ProjectReference Include="..\MetaView.Capability.LaserSource\MetaView.Capabilities.LaserControl.csproj" />
+    <ProjectReference Include="..\MetaView.Capability.MotionControl\MetaView.Capabilities.MotionControl.csproj" />
+    <ProjectReference Include="..\MetaView.Capability.ParameterManagement\MetaView.Capabilities.Parameters.csproj" />
+    <ProjectReference Include="..\MetaView.Capability.PhotoDetect\MetaView.Capabilities.PhotoDetection.csproj" />
+    <ProjectReference Include="..\MetaView.Capability.ReportManagement\MetaView.Capabilities.Reporting.csproj" />
+    <ProjectReference Include="..\MetaView.Presentation\MetaView.Presentation.csproj" />
+    <ProjectReference Include="..\MetaView.Services\MetaView.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\config\metaview.devices.json" Link="config\metaview.devices.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,63 @@
+{
+  "motionSystem": {
+    "useDemo": true,
+    "controllers": [
+      {
+        "id": "SampleStage",
+        "controllerType": "Demo",
+        "portName": "COM1",
+        "baudRate": 9600,
+        "slaveId": 1,
+        "ipAddress": "192.168.0.11",
+        "timeoutMs": 5000,
+        "axisCount": 3,
+        "module": "Microscope Module / Sample Movement"
+      }
+    ],
+    "axisBindings": [
+      {
+        "axis": "X",
+        "controllerId": "SampleStage",
+        "physicalAxisIndex": 0,
+        "function": "Sample Movement X"
+      },
+      {
+        "axis": "Y",
+        "controllerId": "SampleStage",
+        "physicalAxisIndex": 1,
+        "function": "Sample Movement Y"
+      },
+      {
+        "axis": "Z",
+        "controllerId": "SampleStage",
+        "physicalAxisIndex": 2,
+        "function": "Sample Movement Z"
+      }
+    ]
+  },
+  "daq": {
+    "useDemo": true,
+    "configurationPath": ""
+  },
+  "brightfieldCamera": {
+    "cameraType": "Demo",
+    "cameraId": "",
+    "exposureTime": 10000,
+    "gain": 1,
+    "gamma": 1,
+    "frameRate": 10,
+    "roiOffsetX": 0,
+    "roiOffsetY": 0,
+    "roiWidth": 0,
+    "roiHeight": 0,
+    "triggerEnabled": false,
+    "triggerSource": "Software"
+  },
+  "laser": {
+    "laserType": "Demo",
+    "deviceId": "",
+    "powerMilliWatts": 10,
+    "warmupTimeoutMs": 5000,
+    "emissionEnabled": true
+  }
+}

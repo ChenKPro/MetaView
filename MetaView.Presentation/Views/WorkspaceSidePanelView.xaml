@@ -1,0 +1,331 @@
+﻿<UserControl x:Class="MetaView.Presentation.Views.WorkspaceSidePanelView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <Style x:Key="WorkspaceListButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="MinHeight" Value="38" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Padding" Value="8,5" />
+            <Setter Property="Margin" Value="0,0,0,5" />
+            <Setter Property="Background" Value="#101820" />
+            <Setter Property="BorderBrush" Value="{StaticResource BrushLine}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonChrome"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              Margin="{TemplateBinding Padding}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonChrome" Property="Background" Value="#162532" />
+                                <Setter TargetName="ButtonChrome" Property="BorderBrush" Value="#4D8FBC" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <EventSetter Event="Click" Handler="RecipeRow_OnClick" />
+        </Style>
+
+        <Style x:Key="TaskTableRow" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Height" Value="32" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonChrome"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              Margin="{TemplateBinding Padding}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonChrome" Property="Background" Value="#142433" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <EventSetter Event="PreviewMouseLeftButtonDown" Handler="TaskRow_OnPreviewMouseLeftButtonDown" />
+        </Style>
+
+        <Style x:Key="LogAlertButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0,0,0,0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          Margin="{TemplateBinding Padding}" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+    <Border Style="{StaticResource PanelBorder}" Padding="0">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="36" />
+                <RowDefinition Height="1.25*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="0.85*" />
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0"
+                    Background="{StaticResource BrushHeaderChrome}"
+                    BorderBrush="{StaticResource BrushLine}"
+                    BorderThickness="0,0,0,1"
+                    Padding="10,0">
+                <Grid VerticalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Border Width="3"
+                            Height="22"
+                            Background="#5AAEFF"
+                            CornerRadius="2"
+                            Opacity="0.9" />
+                    <TextBlock Grid.Column="1"
+                               Text="Workspace"
+                               FontSize="14"
+                               FontWeight="SemiBold"
+                               Margin="8,0,0,0"
+                               VerticalAlignment="Center" />
+                </Grid>
+            </Border>
+
+            <Border Grid.Row="1"
+                    Style="{StaticResource SubtlePanel}"
+                    Margin="6,6,6,0"
+                    Padding="8">
+                <StackPanel>
+                    <DockPanel LastChildFill="False" Margin="0,0,0,8">
+                        <TextBlock Text="RESPICE" Style="{StaticResource AreaTitle}" Margin="0" />
+                        <Border DockPanel.Dock="Right" Style="{StaticResource ChipBorder}" Padding="7,2">
+                            <TextBlock Text="Recent" FontSize="10" />
+                        </Border>
+                    </DockPanel>
+                    <Button Style="{StaticResource WorkspaceListButton}" Tag="SRS Gray / 2850 cm-1">
+                        <StackPanel HorizontalAlignment="Left">
+                            <TextBlock Text="SRS Gray / 2850 cm-1" FontWeight="SemiBold" TextAlignment="Left" />
+                            <TextBlock Text="20x / 800 x 800 / Round-trip / 10 us" Foreground="{StaticResource BrushMuted}" FontSize="10" TextAlignment="Left" />
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource WorkspaceListButton}" Tag="TPEF / 920 nm">
+                        <StackPanel HorizontalAlignment="Left">
+                            <TextBlock Text="TPEF / 920 nm" TextAlignment="Left" />
+                            <TextBlock Text="40x / 512 x 512 / Epi / 12 us" Foreground="{StaticResource BrushMuted}" FontSize="10" TextAlignment="Left" />
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource WorkspaceListButton}" Tag="Large Area / 4 x 4">
+                        <StackPanel HorizontalAlignment="Left">
+                            <TextBlock Text="Large Area / 4 x 4" TextAlignment="Left" />
+                            <TextBlock Text="10x / SRS / 10% overlap / auto save" Foreground="{StaticResource BrushMuted}" FontSize="10" TextAlignment="Left" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Row="2"
+                    Style="{StaticResource SubtlePanel}"
+                    Margin="6"
+                    Padding="8">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <DockPanel LastChildFill="False" Margin="0,0,0,8">
+                        <TextBlock Text="TASK LIST" Style="{StaticResource AreaTitle}" Margin="0" />
+                        <TextBlock DockPanel.Dock="Right"
+                                   Text="3 / 5"
+                                   Foreground="{StaticResource BrushMuted}"
+                                   FontSize="11" />
+                    </DockPanel>
+                    <Border Grid.Row="1" Background="#101820" BorderBrush="{StaticResource BrushLine}" BorderThickness="1" CornerRadius="3">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="28" />
+                                <RowDefinition Height="32" />
+                                <RowDefinition Height="32" />
+                                <RowDefinition Height="32" />
+                                <RowDefinition Height="32" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="70" />
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.ColumnSpan="2" Background="#16232D" BorderBrush="{StaticResource BrushLine}" BorderThickness="0,0,0,1" CornerRadius="3,3,0,0" />
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Task" Style="{StaticResource HudLabel}" VerticalAlignment="Center" Margin="8,0,0,0" />
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="State" Style="{StaticResource HudLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" />
+
+                            <Button Grid.Row="1" Grid.ColumnSpan="2" Style="{StaticResource TaskTableRow}" Tag="Device Preflight">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="70" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Device Preflight" VerticalAlignment="Center" Margin="8,0,0,0" />
+                                    <TextBlock Grid.Column="1" Text="Ready" Foreground="{StaticResource BrushReady}" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                                </Grid>
+                            </Button>
+
+                            <Button Grid.Row="2" Grid.ColumnSpan="2" Style="{StaticResource TaskTableRow}" Tag="Live Tuning">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="70" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Live Tuning" VerticalAlignment="Center" Margin="8,0,0,0" />
+                                    <TextBlock Grid.Column="1" Text="Running" Foreground="{StaticResource BrushCyan}" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                                </Grid>
+                            </Button>
+
+                            <Button Grid.Row="3" Grid.ColumnSpan="2" Style="{StaticResource TaskTableRow}" Tag="Signal Check">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="70" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Signal Check" VerticalAlignment="Center" Margin="8,0,0,0" />
+                                    <TextBlock Grid.Column="1" Text="Wait" Foreground="{StaticResource BrushMuted}" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                                </Grid>
+                            </Button>
+
+                            <Button Grid.Row="4" Grid.ColumnSpan="2" Style="{StaticResource TaskTableRow}" Tag="Acquisition">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="70" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Acquisition" VerticalAlignment="Center" Margin="8,0,0,0" />
+                                    <TextBlock Grid.Column="1" Text="Idle" Foreground="{StaticResource BrushMuted}" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                                </Grid>
+                            </Button>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <Border Grid.Row="3"
+                    Style="{StaticResource SubtlePanel}"
+                    Margin="6,0,6,6"
+                    Padding="8">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <DockPanel LastChildFill="False" Margin="0,0,0,8">
+                        <TextBlock Text="LOG" Style="{StaticResource AreaTitle}" Margin="0" />
+                        <TextBlock DockPanel.Dock="Right"
+                                   Text="0 Warning"
+                                   Foreground="{StaticResource BrushMuted}"
+                                   FontSize="11" />
+                    </DockPanel>
+                    <Grid Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollBarVisibility="Disabled"
+                                      CanContentScroll="True"
+                                      Padding="0,0,4,0">
+                            <ItemsControl ItemsSource="{Binding WorkflowLogs}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding DisplayText}"
+                                                   Foreground="{StaticResource BrushMuted}"
+                                                   FontSize="11"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   Margin="0,0,0,6">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="{StaticResource BrushMuted}" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsError}" Value="True">
+                                                            <Setter Property="Foreground" Value="{StaticResource BrushDanger}" />
+                                                            <Setter Property="FontWeight" Value="SemiBold" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+
+                        <StackPanel Grid.Row="1">
+                            <Button Style="{StaticResource LogAlertButton}" Click="LogAlert_OnClick">
+                            <TextBlock Text="Show latest diagnostic hint" Foreground="{StaticResource BrushText}" FontSize="11" />
+                            </Button>
+                            <Border x:Name="LogAlertDetails"
+                                    Visibility="Collapsed"
+                                    Background="#101820"
+                                    BorderBrush="{StaticResource BrushLine}"
+                                    BorderThickness="1"
+                                    CornerRadius="3"
+                                    Padding="7"
+                                    Margin="0,5,0,6">
+                                <StackPanel>
+                                    <TextBlock Text="Device: Tunable laser" Foreground="{StaticResource BrushMuted}" FontSize="10" />
+                                    <TextBlock Text="Expected: Warmup complete within 30 s" Foreground="{StaticResource BrushMuted}" FontSize="10" />
+                                    <TextBlock Text="Action: Check interlock, emission state, and laser IP connection." Foreground="{StaticResource BrushText}" FontSize="10" TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+
+    <Popup x:Name="RecipeDetailPopup"
+           Placement="MousePoint"
+           StaysOpen="False"
+           AllowsTransparency="True">
+        <Border Style="{StaticResource DevicePopupPanel}" Width="270">
+            <StackPanel>
+                <TextBlock Text="{Binding ElementName=RecipeDetailPopup, Path=Tag}" Style="{StaticResource SectionTitle}" />
+                <TextBlock Text="Previously tested parameter set" Style="{StaticResource HudLabel}" Margin="0,0,0,8" />
+                <Grid Margin="0,0,0,6">
+                    <TextBlock Text="Image" Foreground="{StaticResource BrushMuted}" />
+                    <TextBlock Text="800 x 800 / 4x" HorizontalAlignment="Right" />
+                </Grid>
+                <Grid Margin="0,0,0,6">
+                    <TextBlock Text="Scan" Foreground="{StaticResource BrushMuted}" />
+                    <TextBlock Text="Round-trip / 10 us" HorizontalAlignment="Right" />
+                </Grid>
+                <Grid>
+                    <TextBlock Text="Save" Foreground="{StaticResource BrushMuted}" />
+                    <TextBlock Text="Raw + Image" Foreground="{StaticResource BrushCyan}" HorizontalAlignment="Right" />
+                </Grid>
+            </StackPanel>
+        </Border>
+    </Popup>
+    </Grid>
+</UserControl>
+

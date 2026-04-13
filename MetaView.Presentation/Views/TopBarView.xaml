@@ -1,0 +1,459 @@
+﻿<UserControl x:Class="MetaView.Presentation.Views.TopBarView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:MetaView.Presentation.Controls">
+    <Border x:Name="DragSurface"
+            BorderBrush="#2D4A63"
+            BorderThickness="0,0,0,1"
+            CornerRadius="0"
+            MouseLeftButtonDown="DragSurface_OnMouseLeftButtonDown">
+        <Border.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                <GradientStop Color="#22313D" Offset="0" />
+                <GradientStop Color="#1A2733" Offset="1" />
+            </LinearGradientBrush>
+        </Border.Background>
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="8" Direction="270" ShadowDepth="1" Opacity="0.18" Color="#000000" />
+        </Border.Effect>
+        <Grid Margin="14,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="220" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="116" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <Border Width="30" Height="30" CornerRadius="3" BorderBrush="#2C6FA7" BorderThickness="1" Margin="0,0,12,0">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Color="#76C1FF" Offset="0" />
+                            <GradientStop Color="#4CA7FF" Offset="1" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <TextBlock Text="M" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Foreground="#F1F6FA" />
+                </Border>
+                <StackPanel>
+                    <TextBlock Text="MeataView-Evo" FontSize="17" FontWeight="SemiBold" />
+                    <TextBlock Text="MULTIMODAL MICROSCOPE" FontSize="9" Foreground="{StaticResource BrushMuted}" />
+                </StackPanel>
+            </StackPanel>
+
+            <Menu Grid.Column="1"
+                  VerticalAlignment="Center"
+                  Background="Transparent"
+                  Foreground="{StaticResource BrushText}"
+                  BorderThickness="0"
+                  Padding="0">
+                <MenuItem Header="File">
+                    <MenuItem Header="New Task" />
+                    <MenuItem Header="Import Data" />
+                    <MenuItem Header="Export Image / Data" />
+                    <Separator />
+                    <MenuItem Header="Save Current Data" />
+                    <MenuItem Header="Exit" Click="Close_OnClick" />
+                </MenuItem>
+                <MenuItem Header="Configure">
+                    <MenuItem Header="Device" />
+                    <MenuItem Header="Configuration Object" />
+                    <MenuItem Header="Hardware Panel Layout" />
+                    <Separator />
+                    <MenuItem Header="Scan Parameters" />
+                    <MenuItem Header="System Settings" />
+                </MenuItem>
+                <MenuItem Header="Image">
+                    <MenuItem Header="Adjust" />
+                    <MenuItem Header="LUT / Pseudocolor" />
+                    <MenuItem Header="Properties" />
+                    <Separator />
+                    <MenuItem Header="Export" />
+                </MenuItem>
+                <MenuItem Header="Calibration">
+                    <MenuItem Header="Wavenumber Calibration" />
+                    <MenuItem Header="BBO Curve Calibration" />
+                    <MenuItem Header="Standard Spectra Import" />
+                    <MenuItem Header="Update Flat Field Correction Data" />
+                    <MenuItem Header="Add Spectral Window" />
+                    <Separator />
+                    <MenuItem Header="Custom Spectral Window" />
+                </MenuItem>
+                <MenuItem Header="Acquisition">
+                    <MenuItem Header="Live Preview" />
+                    <MenuItem Header="Single Capture" />
+                    <MenuItem Header="SRS / Hyperspectral" />
+                    <MenuItem Header="TPEF" />
+                    <MenuItem Header="DC Brightfield" />
+                    <Separator />
+                    <MenuItem Header="Multimodality" />
+                    <MenuItem Header="Large Area" />
+                    <MenuItem Header="3D Volume" />
+                    <MenuItem Header="Brightfield Guided ROI" />
+                </MenuItem>
+                <MenuItem Header="Tools">
+                    <MenuItem Header="Multi Position" />
+                    <MenuItem Header="Device Center" />
+                    <MenuItem Header="Log Viewer" />
+                    <MenuItem Header="Diagnostics" />
+                </MenuItem>
+                <MenuItem Header="Help">
+                    <MenuItem Header="User Manual" />
+                    <MenuItem Header="Safety Instructions" />
+                    <MenuItem Header="About MeataView-Evo" />
+                </MenuItem>
+            </Menu>
+
+            <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <ToggleButton x:Name="SystemButton" Style="{StaticResource StatusToggleButton}">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Ellipse Width="7" Height="7" Fill="{StaticResource BrushReady}" Stroke="#234A2B" Margin="0,0,7,0" />
+                        <StackPanel>
+                            <TextBlock Text="System" FontSize="12" FontWeight="SemiBold" />
+                            <TextBlock Text="Ready" FontSize="9" Foreground="{StaticResource BrushMuted}" />
+                        </StackPanel>
+                    </StackPanel>
+                </ToggleButton>
+                <Popup PlacementTarget="{Binding ElementName=SystemButton}" Placement="Bottom" IsOpen="{Binding IsChecked, ElementName=SystemButton}" StaysOpen="False" AllowsTransparency="True">
+                    <Border Style="{StaticResource DevicePopupPanel}" Width="360">
+                        <StackPanel>
+                            <TextBlock Text="System Overview" Style="{StaticResource SectionTitle}" />
+                            <Grid Margin="0,0,0,8">
+                                <TextBlock Text="Controller" Foreground="{StaticResource BrushMuted}" />
+                                <TextBlock Text="Ready" HorizontalAlignment="Right" Foreground="{StaticResource BrushCyan}" />
+                            </Grid>
+                            <Grid Margin="0,0,0,8">
+                                <TextBlock Text="Storage" Foreground="{StaticResource BrushMuted}" />
+                                <TextBlock Text="328 GB Free" HorizontalAlignment="Right" />
+                            </Grid>
+                            <TextBlock Text="Memory" Style="{StaticResource FieldLabel}" />
+                            <ProgressBar Value="62" Maximum="100" Height="8" Foreground="{StaticResource BrushCyan}" />
+                        </StackPanel>
+                    </Border>
+                </Popup>
+
+                <ToggleButton x:Name="LaserButton" Style="{StaticResource StatusToggleButton}">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Ellipse Width="7" Height="7" Fill="{StaticResource BrushReady}" Stroke="#234A2B" Margin="0,0,7,0" />
+                        <StackPanel>
+                            <TextBlock Text="Laser" FontSize="12" FontWeight="SemiBold" />
+                            <TextBlock Text="801 nm" FontSize="9" Foreground="{StaticResource BrushMuted}" />
+                        </StackPanel>
+                    </StackPanel>
+                </ToggleButton>
+                <Popup PlacementTarget="{Binding ElementName=LaserButton}" Placement="Bottom" IsOpen="{Binding IsChecked, ElementName=LaserButton}" StaysOpen="False" AllowsTransparency="True">
+                    <Border Style="{StaticResource DevicePopupPanel}" Width="390">
+                        <StackPanel>
+                            <Border Style="{StaticResource PopupSectionHeader}">
+                                <DockPanel LastChildFill="False">
+                                    <TextBlock Text="Laser" FontWeight="SemiBold" DockPanel.Dock="Left" />
+                                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                                        <Ellipse Width="8" Height="8" Fill="{StaticResource BrushReady}" Stroke="#234A2B" Margin="0,0,6,0" />
+                                        <TextBlock Text="Ready" Foreground="{StaticResource BrushMuted}" FontSize="11" />
+                                    </StackPanel>
+                                </DockPanel>
+                            </Border>
+
+                            <Border Style="{StaticResource InsetGroup}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Margin="0,0,8,0">
+                                        <TextBlock Text="I/O" Style="{StaticResource FieldLabel}" />
+                                        <TextBlock Text="127.0.0.1" Style="{StaticResource MetricValue}" />
+                                        <TextBlock Text="Warmup" Style="{StaticResource FieldLabel}" Margin="0,10,0,0" />
+                                        <ProgressBar Value="100" Maximum="100" Height="8" Foreground="{StaticResource BrushCyan}" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                                        <TextBlock Text="Tunable Wavelength" Style="{StaticResource FieldLabel}" />
+                                        <controls:NumericStepper Value="801" Minimum="700" Maximum="1100" Step="1" DecimalPlaces="0" Unit="nm" />
+                                        <TextBlock Text="Shutter" Style="{StaticResource FieldLabel}" />
+                                        <ComboBox SelectedIndex="0">
+                                            <ComboBoxItem Content="Standard" />
+                                            <ComboBoxItem Content="Sample protection" />
+                                            <ComboBoxItem Content="Open" />
+                                            <ComboBoxItem Content="Closed" />
+                                        </ComboBox>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+
+                            <Border Style="{StaticResource InsetGroup}">
+                                <StackPanel>
+                                    <TextBlock Text="Beam State" Style="{StaticResource FieldLabel}" />
+                                    <WrapPanel>
+                                        <CheckBox Content="Emission" IsChecked="True" />
+                                        <CheckBox Content="Tunable Beam" IsChecked="True" />
+                                        <CheckBox Content="Fixed IR Beam" IsChecked="True" />
+                                    </WrapPanel>
+                                    <TextBlock Text="Beam Correction" Style="{StaticResource FieldLabel}" Margin="0,6,0,0" />
+                                    <WrapPanel>
+                                        <CheckBox Content="Always" />
+                                        <CheckBox Content="Update Stokes" IsChecked="True" />
+                                    </WrapPanel>
+                                </StackPanel>
+                            </Border>
+
+                            <UniformGrid Columns="2">
+                                <Button Content="Run Correction" Style="{StaticResource PrimaryButton}" />
+                                <Button Content="Warmup" />
+                            </UniformGrid>
+                        </StackPanel>
+                    </Border>
+                </Popup>
+
+                <ToggleButton x:Name="PowerButton" Style="{StaticResource StatusToggleButton}">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Ellipse Width="7" Height="7" Fill="{StaticResource BrushReady}" Stroke="#234A2B" Margin="0,0,7,0" />
+                        <StackPanel>
+                            <TextBlock Text="Power" FontSize="12" FontWeight="SemiBold" />
+                            <TextBlock Text="12 / 18%" FontSize="9" Foreground="{StaticResource BrushMuted}" />
+                        </StackPanel>
+                    </StackPanel>
+                </ToggleButton>
+                <Popup PlacementTarget="{Binding ElementName=PowerButton}" Placement="Bottom" IsOpen="{Binding IsChecked, ElementName=PowerButton}" StaysOpen="False" AllowsTransparency="True">
+                    <Border Style="{StaticResource DevicePopupPanel}" Width="360">
+                        <StackPanel>
+                            <Border Style="{StaticResource PopupSectionHeader}">
+                                <DockPanel LastChildFill="False">
+                                    <TextBlock Text="Power Monitor" FontWeight="SemiBold" />
+                                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                                        <Ellipse Width="8" Height="8" Fill="{StaticResource BrushReady}" Stroke="#234A2B" Margin="0,0,6,0" />
+                                        <TextBlock Text="Connected" Foreground="{StaticResource BrushMuted}" FontSize="11" />
+                                    </StackPanel>
+                                </DockPanel>
+                            </Border>
+
+                            <Border Style="{StaticResource InsetGroup}">
+                                <StackPanel>
+                                    <UniformGrid Columns="2" Margin="0,0,0,8">
+                                        <RadioButton Content="Stokes" IsChecked="True" />
+                                        <RadioButton Content="Pump" />
+                                    </UniformGrid>
+                                    <Grid Margin="0,0,0,8">
+                                        <TextBlock Text="Wavelength (nm)" Foreground="{StaticResource BrushMuted}" />
+                                        <TextBlock Text="801 / 1045" HorizontalAlignment="Right" />
+                                    </Grid>
+                                    <TextBlock Text="Pump Power" Style="{StaticResource FieldLabel}" />
+                                    <ProgressBar Value="12" Maximum="100" Height="8" Foreground="{StaticResource BrushCyan}" Margin="0,0,0,10" />
+                                    <TextBlock Text="Stokes Power" Style="{StaticResource FieldLabel}" />
+                                    <ProgressBar Value="18" Maximum="100" Height="8" Foreground="{StaticResource BrushCyan}" />
+                                </StackPanel>
+                            </Border>
+
+                            <Border Style="{StaticResource InsetGroup}">
+                                <UniformGrid Columns="2">
+                                    <StackPanel Margin="0,0,6,0">
+                                        <TextBlock Text="Target (mW)" Style="{StaticResource FieldLabel}" />
+                                        <controls:NumericStepper Value="10" Minimum="0" Maximum="100" Step="0.1" DecimalPlaces="1" Unit="mW" />
+                                    </StackPanel>
+                                    <StackPanel Margin="6,0,0,0">
+                                        <TextBlock Text="Power (mW)" Style="{StaticResource FieldLabel}" />
+                                        <controls:NumericStepper Value="9.8" Minimum="0" Maximum="100" Step="0.1" DecimalPlaces="1" Unit="mW" />
+                                    </StackPanel>
+                                </UniformGrid>
+                            </Border>
+                            <Button Content="Measure / Stop" Style="{StaticResource PrimaryButton}" />
+                        </StackPanel>
+                    </Border>
+                </Popup>
+
+                <ToggleButton x:Name="DelayStageButton" Style="{StaticResource StatusToggleButton}">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Ellipse Width="7" Height="7" Fill="{StaticResource BrushReady}" Stroke="#234A2B" Margin="0,0,7,0" />
+                        <StackPanel>
+                            <TextBlock Text="DelayStage" FontSize="12" FontWeight="SemiBold" />
+                            <TextBlock Text="50.00 ps" FontSize="9" Foreground="{StaticResource BrushMuted}" />
+                        </StackPanel>
+                    </StackPanel>
+                </ToggleButton>
+                <Popup PlacementTarget="{Binding ElementName=DelayStageButton}" Placement="Bottom" IsOpen="{Binding IsChecked, ElementName=DelayStageButton}" StaysOpen="False" AllowsTransparency="True">
+                    <Border Style="{StaticResource DevicePopupPanel}" Width="360">
+                        <StackPanel>
+                            <Border Style="{StaticResource PopupSectionHeader}">
+                                <DockPanel LastChildFill="False">
+                                    <TextBlock Text="Delay Stage" FontWeight="SemiBold" />
+                                    <TextBlock Text="Connected" DockPanel.Dock="Right" Foreground="{StaticResource BrushMuted}" FontSize="11" />
+                                </DockPanel>
+                            </Border>
+                            <Border Style="{StaticResource InsetGroup}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="Current Pos" Style="{StaticResource FieldLabel}" />
+                                        <TextBlock Text="50.00 um" Style="{StaticResource MetricValue}" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="Display Position" Style="{StaticResource FieldLabel}" />
+                                        <controls:NumericStepper Value="50" Minimum="-1000" Maximum="1000" Step="0.1" DecimalPlaces="1" Unit="ps" />
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            <Border Style="{StaticResource InsetGroup}">
+                                <UniformGrid Columns="2">
+                                    <StackPanel Margin="0,0,6,0">
+                                        <TextBlock Text="Move Abs (um)" Style="{StaticResource FieldLabel}" />
+                                        <controls:NumericStepper Value="0" Minimum="-5000" Maximum="5000" Step="1" DecimalPlaces="1" Unit="um" />
+                                    </StackPanel>
+                                    <StackPanel Margin="6,0,0,0">
+                                        <TextBlock Text="Move Rel (um)" Style="{StaticResource FieldLabel}" />
+                                        <controls:NumericStepper Value="10" Minimum="-500" Maximum="500" Step="0.1" DecimalPlaces="1" Unit="um" />
+                                    </StackPanel>
+                                    <StackPanel Margin="0,0,6,0">
+                                        <TextBlock Text="Step" Style="{StaticResource FieldLabel}" />
+                                        <controls:NumericStepper Value="0.1" Minimum="0.01" Maximum="10" Step="0.01" DecimalPlaces="2" Unit="ps" />
+                                    </StackPanel>
+                                </UniformGrid>
+                            </Border>
+                            <UniformGrid Columns="3">
+                                <Button Content="Move -" />
+                                <Button Content="Home" Style="{StaticResource PrimaryButton}" />
+                                <Button Content="Move +" />
+                            </UniformGrid>
+                        </StackPanel>
+                    </Border>
+                </Popup>
+
+                <ToggleButton x:Name="SpectralButton" Style="{StaticResource StatusToggleButton}">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Ellipse Width="7" Height="7" Fill="{StaticResource BrushReady}" Stroke="#234A2B" Margin="0,0,7,0" />
+                        <StackPanel>
+                            <TextBlock Text="Spectral" FontSize="12" FontWeight="SemiBold" />
+                            <TextBlock Text="2915 cm-1" FontSize="9" Foreground="{StaticResource BrushMuted}" />
+                        </StackPanel>
+                    </StackPanel>
+                </ToggleButton>
+                <Popup PlacementTarget="{Binding ElementName=SpectralButton}" Placement="Bottom" IsOpen="{Binding IsChecked, ElementName=SpectralButton}" StaysOpen="False" AllowsTransparency="True">
+                    <Border Style="{StaticResource DevicePopupPanel}" Width="390">
+                        <StackPanel>
+                            <Border Style="{StaticResource PopupSectionHeader}">
+                                <DockPanel LastChildFill="False">
+                                    <TextBlock Text="Spectral Focusing" FontWeight="SemiBold" />
+                                    <TextBlock Text="ps ON" DockPanel.Dock="Right" Foreground="{StaticResource BrushMuted}" FontSize="11" />
+                                </DockPanel>
+                            </Border>
+                            <Border Style="{StaticResource InsetGroup}">
+                                <StackPanel>
+                                    <TextBlock Text="Pulse Mode" Style="{StaticResource FieldLabel}" />
+                                    <UniformGrid Columns="2" Margin="0,2,0,8">
+                                        <Button Content="ps" Style="{StaticResource PrimaryButton}" />
+                                        <Button Content="fs" />
+                                    </UniformGrid>
+                                    <UniformGrid Columns="2">
+                                        <StackPanel Margin="0,0,8,0">
+                                            <TextBlock Text="Window" Style="{StaticResource FieldLabel}" />
+                                            <TextBox Text="2750-3075 cm-1" />
+                                        </StackPanel>
+                                        <StackPanel Margin="8,0,0,0">
+                                            <TextBlock Text="Central" Style="{StaticResource FieldLabel}" />
+                                            <controls:NumericStepper Value="2915" Minimum="400" Maximum="3200" Step="1" DecimalPlaces="0" Unit="cm-1" />
+                                        </StackPanel>
+                                    </UniformGrid>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource InsetGroup}">
+                                <UniformGrid Columns="2">
+                                    <StackPanel Margin="0,0,8,0">
+                                        <TextBlock Text="Delay Compensation" Style="{StaticResource FieldLabel}" />
+                                        <controls:NumericStepper Value="0" Minimum="-20" Maximum="20" Step="0.001" DecimalPlaces="3" Unit="ps" />
+                                    </StackPanel>
+                                    <StackPanel Margin="8,0,0,0">
+                                        <TextBlock Text="Connect" Style="{StaticResource FieldLabel}" />
+                                        <CheckBox Content="Ready" IsChecked="True" />
+                                    </StackPanel>
+                                </UniformGrid>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                </Popup>
+
+                <ToggleButton x:Name="OthersButton" Style="{StaticResource StatusToggleButton}">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Ellipse Width="7" Height="7" Fill="{StaticResource BrushAmber}" Margin="0,0,7,0" />
+                        <StackPanel>
+                            <TextBlock Text="Others" FontSize="12" FontWeight="SemiBold" />
+                            <TextBlock Text="3 devices" FontSize="9" Foreground="{StaticResource BrushMuted}" />
+                        </StackPanel>
+                    </StackPanel>
+                </ToggleButton>
+                <Popup PlacementTarget="{Binding ElementName=OthersButton}" Placement="Bottom" IsOpen="{Binding IsChecked, ElementName=OthersButton}" StaysOpen="False" AllowsTransparency="True">
+                    <Border Style="{StaticResource DevicePopupPanel}" Width="420">
+                        <StackPanel>
+                            <Border Style="{StaticResource PopupSectionHeader}">
+                                <DockPanel LastChildFill="False">
+                                    <TextBlock Text="Other Devices" FontWeight="SemiBold" />
+                                    <TextBlock Text="3 modules" DockPanel.Dock="Right" Foreground="{StaticResource BrushMuted}" FontSize="11" />
+                                </DockPanel>
+                            </Border>
+                            <Border Style="{StaticResource InsetGroup}">
+                                <StackPanel>
+                                    <TextBlock Text="Lock-in Amplifier" FontWeight="SemiBold" Margin="0,0,0,8" />
+                                    <UniformGrid Columns="2">
+                                        <StackPanel Margin="0,0,8,0">
+                                            <TextBlock Text="Phase" Style="{StaticResource FieldLabel}" />
+                                            <controls:NumericStepper Value="0" Minimum="-180" Maximum="180" Step="1" DecimalPlaces="0" Unit="deg" />
+                                        </StackPanel>
+                                        <StackPanel Margin="8,0,0,0">
+                                            <TextBlock Text="Sensitivity" Style="{StaticResource FieldLabel}" />
+                                            <controls:NumericStepper Value="1" Minimum="0.001" Maximum="1000" Step="0.1" DecimalPlaces="1" Unit="mV" />
+                                        </StackPanel>
+                                    </UniformGrid>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource InsetGroup}">
+                                <StackPanel>
+                                    <TextBlock Text="Rotary Stage" FontWeight="SemiBold" Margin="0,0,0,8" />
+                                    <WrapPanel>
+                                        <RadioButton Content="SPower" IsChecked="True" />
+                                        <RadioButton Content="PPower" />
+                                        <RadioButton Content="SPolarization" />
+                                        <RadioButton Content="PPolarization" />
+                                    </WrapPanel>
+                                    <UniformGrid Columns="2">
+                                        <StackPanel Margin="0,0,8,0">
+                                            <TextBlock Text="Position (deg)" Style="{StaticResource FieldLabel}" />
+                                            <controls:NumericStepper Value="0" Minimum="-360" Maximum="360" Step="0.1" DecimalPlaces="1" Unit="deg" />
+                                        </StackPanel>
+                                        <StackPanel Margin="8,0,0,0">
+                                            <TextBlock Text="Step (deg)" Style="{StaticResource FieldLabel}" />
+                                            <controls:NumericStepper Value="1" Minimum="0.1" Maximum="45" Step="0.1" DecimalPlaces="1" Unit="deg" />
+                                        </StackPanel>
+                                    </UniformGrid>
+                                    <UniformGrid Columns="3">
+                                        <Button Content="Backward" />
+                                        <Button Content="Home" Style="{StaticResource PrimaryButton}" />
+                                        <Button Content="Forward" />
+                                    </UniformGrid>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource InsetGroup}" Margin="0">
+                                <StackPanel>
+                                    <TextBlock Text="Filter Rotary Stage" FontWeight="SemiBold" Margin="0,0,0,8" />
+                                    <ComboBox SelectedIndex="2">
+                                        <ComboBoxItem Content="Open" />
+                                        <ComboBoxItem Content="525BP" />
+                                        <ComboBoxItem Content="560LP" />
+                                        <ComboBoxItem Content="600LP" />
+                                    </ComboBox>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                </Popup>
+            </StackPanel>
+
+            <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <Button Content="_" Style="{StaticResource WindowButton}" Click="Minimize_OnClick" />
+                <Button Content="[]" Style="{StaticResource WindowButton}" Click="MaximizeRestore_OnClick" />
+                <Button Content="X" Style="{StaticResource CloseWindowButton}" Click="Close_OnClick" />
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>
+
+
+

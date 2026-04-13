@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>MetaView.Services.Interfaces</RootNamespace>
+    <AssemblyName>MetaView.Services.Abstractions</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Prism.Core" Version="9.0.537" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Foundation\Vibronix.Foundation.Common\Vibronix.Foundation.Common.csproj" />
+    <ProjectReference Include="..\MetaView.Core\MetaView.Core.csproj" />
+  </ItemGroup>
+
+</Project>

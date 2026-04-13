@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>MetaView.Presentation</RootNamespace>
+    <AssemblyName>MetaView.Presentation</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Prism.Core" Version="9.0.537" />
+    <PackageReference Include="Prism.Wpf" Version="9.0.537" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Foundation\Vibronix.Presentation.Wpf.Plot\Vibronix.Presentation.Wpf.Plot.csproj" />
+    <ProjectReference Include="..\ImageViewer2D.Controls\ImageViewer2D.Controls.csproj" />
+    <ProjectReference Include="..\MetaView.Core\MetaView.Core.csproj" />
+    <ProjectReference Include="..\MetaView.Services.Interfaces\MetaView.Services.Abstractions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\pic.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,237 @@
+﻿<UserControl x:Class="MetaView.Presentation.Controls.NumericStepper"
+             x:Name="Root"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             MinHeight="36"
+             Margin="0,3,0,8"
+             PreviewMouseWheel="OnPreviewMouseWheel">
+    <UserControl.Resources>
+        <Style x:Key="StepperSliderThumb" TargetType="Thumb">
+            <Setter Property="Width" Value="14" />
+            <Setter Property="Height" Value="14" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Thumb">
+                        <Grid>
+                            <Ellipse Fill="#18242D"
+                                     Stroke="#7AC3FF"
+                                     StrokeThickness="1.5" />
+                            <Ellipse Width="6"
+                                     Height="6"
+                                     Fill="{StaticResource BrushCyan}"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="StepperTrackButton" TargetType="RepeatButton">
+            <Setter Property="Focusable" Value="False" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RepeatButton">
+                        <Border Background="Transparent" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="StepperSlider" TargetType="Slider">
+            <Setter Property="Height" Value="20" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Slider">
+                        <Grid>
+                            <Border Height="4"
+                                    Background="#0F171E"
+                                    BorderBrush="#2F506D"
+                                    BorderThickness="1"
+                                    CornerRadius="2"
+                                    VerticalAlignment="Center" />
+                            <Track x:Name="PART_Track"
+                                   VerticalAlignment="Center">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton Command="{x:Static Slider.DecreaseLarge}"
+                                                  Style="{StaticResource StepperTrackButton}" />
+                                </Track.DecreaseRepeatButton>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton Command="{x:Static Slider.IncreaseLarge}"
+                                                  Style="{StaticResource StepperTrackButton}" />
+                                </Track.IncreaseRepeatButton>
+                                <Track.Thumb>
+                                    <Thumb Style="{StaticResource StepperSliderThumb}" />
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="StepperButton" TargetType="RepeatButton">
+            <Setter Property="Focusable" Value="False" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RepeatButton">
+                        <Border x:Name="ButtonChrome"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonChrome" Property="Background" Value="#263A49" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonChrome" Property="Background" Value="#31526A" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Border x:Name="Chrome"
+                Background="#151F28"
+                BorderBrush="#365876"
+                BorderThickness="1"
+                CornerRadius="3"
+                SnapsToDevicePixels="True">
+            <Grid>
+                <Border BorderBrush="#66000000" BorderThickness="1,1,0,0" CornerRadius="2" />
+                <Border BorderBrush="#20FFFFFF" BorderThickness="0,0,1,1" CornerRadius="2" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="25" />
+                    </Grid.ColumnDefinitions>
+
+                    <ToggleButton x:Name="ValueButton"
+                                  Background="Transparent"
+                                  BorderBrush="Transparent"
+                                  BorderThickness="0"
+                                  Focusable="False"
+                                  Padding="9,0"
+                                  IsChecked="{Binding IsPopupOpen, ElementName=Root, Mode=TwoWay}">
+                        <ToggleButton.Template>
+                            <ControlTemplate TargetType="ToggleButton">
+                                <Border x:Name="ValueChrome"
+                                        Background="{TemplateBinding Background}"
+                                        Padding="{TemplateBinding Padding}">
+                                    <TextBlock Text="{Binding DisplayText, ElementName=Root}"
+                                               Foreground="{StaticResource BrushText}"
+                                               FontSize="13"
+                                               FontWeight="SemiBold"
+                                               VerticalAlignment="Center"
+                                               TextTrimming="CharacterEllipsis" />
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="ValueChrome" Property="Background" Value="#101820" />
+                                    </Trigger>
+                                    <Trigger Property="IsChecked" Value="True">
+                                        <Setter TargetName="ValueChrome" Property="Background" Value="#101820" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </ToggleButton.Template>
+                    </ToggleButton>
+
+                    <Border Grid.Column="1"
+                            Width="1"
+                            HorizontalAlignment="Left"
+                            Background="#2F506D"
+                            Opacity="0.85" />
+
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="1" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <RepeatButton Grid.Row="0"
+                                      Style="{StaticResource StepperButton}"
+                                      Delay="350"
+                                      Interval="70"
+                                      Click="OnIncreaseClick">
+                            <Path Width="8"
+                                  Height="5"
+                                  Stretch="Fill"
+                                  Data="M 0 5 L 4 0 L 8 5 Z"
+                                  Fill="{StaticResource BrushMuted}" />
+                        </RepeatButton>
+                        <Border Grid.Row="1"
+                                Background="#2F506D"
+                                Opacity="0.55" />
+                        <RepeatButton Grid.Row="2"
+                                      Style="{StaticResource StepperButton}"
+                                      Delay="350"
+                                      Interval="70"
+                                      Click="OnDecreaseClick">
+                            <Path Width="8"
+                                  Height="5"
+                                  Stretch="Fill"
+                                  Data="M 0 0 L 4 5 L 8 0 Z"
+                                  Fill="{StaticResource BrushMuted}" />
+                        </RepeatButton>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <Popup AllowsTransparency="True"
+               IsOpen="{Binding IsPopupOpen, ElementName=Root}"
+               Placement="Bottom"
+               PlacementTarget="{Binding ElementName=Chrome}"
+               StaysOpen="False">
+            <Border Width="{Binding ActualWidth, ElementName=Chrome}"
+                    Margin="0,4,0,0"
+                    Padding="10,8"
+                    Background="#192630"
+                    BorderBrush="#365876"
+                    BorderThickness="1"
+                    CornerRadius="4">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="10"
+                                      Direction="270"
+                                      ShadowDepth="2"
+                                      Opacity="0.28"
+                                      Color="#000000" />
+                </Border.Effect>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Slider Grid.Row="0"
+                            Style="{StaticResource StepperSlider}"
+                            Minimum="{Binding Minimum, ElementName=Root}"
+                            Maximum="{Binding Maximum, ElementName=Root}"
+                            SmallChange="{Binding Step, ElementName=Root}"
+                            TickFrequency="{Binding Step, ElementName=Root}"
+                            Value="{Binding Value, ElementName=Root, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Grid.Row="1"
+                               Text="{Binding DisplayText, ElementName=Root}"
+                               Foreground="{StaticResource BrushMuted}"
+                               FontSize="13"
+                               FontWeight="SemiBold"
+                               Margin="0,5,0,0" />
+                </Grid>
+            </Border>
+        </Popup>
+    </Grid>
+</UserControl>
+

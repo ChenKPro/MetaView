@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>MetaView.Capabilities.LaserControl</RootNamespace>
+    <AssemblyName>MetaView.Capabilities.LaserControl</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MetaView.Core\MetaView.Core.csproj" />
+  </ItemGroup>
+
+</Project>

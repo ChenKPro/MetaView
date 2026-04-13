@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>MetaView.Capabilities.Algorithms</RootNamespace>
+    <AssemblyName>MetaView.Capabilities.Algorithms</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MetaView.Core\MetaView.Core.csproj" />
+  </ItemGroup>
+
+</Project>
