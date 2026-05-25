@@ -1,3 +1,5 @@
+using System.Configuration;
+using System.Data;
 using System.Windows;
 using MetaView.Composition;
 using MetaView.Presentation;
@@ -28,9 +30,9 @@ namespace MetaView
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
-        {
+    {
             containerRegistry.RegisterMetaViewModules();
-        }
+    }
 
         private static void RegisterShellRegions(IRegionManager regionManager)
         {
