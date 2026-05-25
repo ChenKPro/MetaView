@@ -1,5 +1,6 @@
-﻿using MetaView.Core.Imaging.Brightfield;
 using MetaView.Core.DataAcquisition;
+using MetaView.Core.Imaging;
+using MetaView.Core.Imaging.Brightfield;
 using MetaView.Core.Laser;
 using MetaView.Core.MotionControl;
 using Vibronix.Foundation.Common.Results;
@@ -50,4 +51,14 @@ public interface IRuntimeParameterProvider
     /// Updates the current laser runtime settings.
     /// </summary>
     OperationResult SetLaserRuntimeSettings(LaserRuntimeSettings settings);
+
+    /// <summary>
+    /// Gets the current image-to-stage navigation settings.
+    /// </summary>
+    OperationResult<ImageStageNavigationSettings> GetImageStageNavigationSettings();
+
+    /// <summary>
+    /// Updates the current image-to-stage navigation settings.
+    /// </summary>
+    OperationResult SetImageStageNavigationSettings(ImageStageNavigationSettings settings);
 }

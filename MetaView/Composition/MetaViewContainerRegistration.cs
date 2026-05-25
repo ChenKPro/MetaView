@@ -98,6 +98,6 @@ internal static class MetaViewContainerRegistration
         containerRegistry.RegisterSingleton<StatusBarViewModel>();
         containerRegistry.RegisterSingleton<WorkspaceSidePanelViewModel>();
         containerRegistry.RegisterSingleton<ShellViewModel>();
-        containerRegistry.Register<MainWindow>();
+        containerRegistry.Register<MetaView.Presentation.MainWindow>();
     }
 }

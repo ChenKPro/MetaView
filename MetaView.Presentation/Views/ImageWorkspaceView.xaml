@@ -379,11 +379,17 @@
                 </Border>
 
                 <Grid Grid.Row="1">
-                    <viewer:ImageViewer2D Source="{Binding LiveImageSource}"
+                    <viewer:ImageViewer2D x:Name="ImageViewer"
+                                          Source="{Binding LiveImageSource}"
                                           ShowNavigator="True"
                                           ShowToolBar="{Binding IsImageToolBarOpen, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                           RoiStroke="{StaticResource BrushCyan}"
-                                          RoiStrokeThickness="2" />
+                                          RoiStrokeThickness="2"
+                                          ImageMouseDown="OnImageMouseDown"
+                                          ImageMouseMove="OnImageMouseMove"
+                                          ImageMouseUp="OnImageMouseUp"
+                                          ImageMouseDoubleClick="OnImageMouseDoubleClick"
+                                          ImageMouseWheel="OnImageMouseWheel" />
                     <StackPanel HorizontalAlignment="Left"
                                 VerticalAlignment="Bottom"
                                 Margin="18,0,0,16">

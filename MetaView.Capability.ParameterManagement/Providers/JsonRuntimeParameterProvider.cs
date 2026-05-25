@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using MetaView.Capability.ParameterManagement.Defaults;
 using MetaView.Capability.ParameterManagement.Sources;
 using MetaView.Core.DataAcquisition;
+using MetaView.Core.Imaging;
 using MetaView.Core.Imaging.Brightfield;
 using MetaView.Core.Laser;
 using MetaView.Core.MotionControl;
@@ -33,6 +34,7 @@ public sealed class JsonRuntimeParameterProvider : IRuntimeParameterProvider
     private MotionSystemConfiguration? _motionSystemConfiguration;
     private DaqRuntimeConfiguration? _daqRuntimeConfiguration;
     private LaserRuntimeSettings? _laserRuntimeSettings;
+    private ImageStageNavigationSettings? _imageStageNavigationSettings;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="JsonRuntimeParameterProvider" /> class.
@@ -129,6 +131,28 @@ public sealed class JsonRuntimeParameterProvider : IRuntimeParameterProvider
         }
 
         return OperationResult.Ok("Laser runtime settings updated.");
+    }
+
+    /// <inheritdoc />
+    public OperationResult<ImageStageNavigationSettings> GetImageStageNavigationSettings()
+    {
+        lock (_syncRoot)
+        {
+            LoadDocumentIfNeeded();
+            _imageStageNavigationSettings ??= _document?.ImageStageNavigation ?? ImageStageNavigationParameterDefaults.Create(_reader);
+            return OperationResult<ImageStageNavigationSettings>.Ok(_imageStageNavigationSettings, "Image-stage navigation settings loaded.");
+        }
+    }
+
+    /// <inheritdoc />
+    public OperationResult SetImageStageNavigationSettings(ImageStageNavigationSettings settings)
+    {
+        lock (_syncRoot)
+        {
+            _imageStageNavigationSettings = settings;
+        }
+
+        return OperationResult.Ok("Image-stage navigation settings updated.");
     }
 
     private void LoadDocumentIfNeeded()

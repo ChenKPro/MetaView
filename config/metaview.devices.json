@@ -53,6 +53,14 @@
     "triggerEnabled": false,
     "triggerSource": "Software"
   },
+  "imageStageNavigation": {
+    "micronsPerPixelX": 0.43,
+    "micronsPerPixelY": 0.43,
+    "wheelStepMicronsZ": 0.5,
+    "invertX": false,
+    "invertY": false,
+    "invertZ": false
+  },
   "laser": {
     "laserType": "Demo",
     "deviceId": "",

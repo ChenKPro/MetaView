@@ -20,7 +20,7 @@ namespace MetaView
         protected override Window CreateShell()
         {
             Container.Resolve<IPresentationThemeManager>().ApplyTheme(PresentationThemeNames.Default);
-            return Container.Resolve<MainWindow>();
+            return Container.Resolve<MetaView.Presentation.MainWindow>();
         }
 
         protected override void OnInitialized()

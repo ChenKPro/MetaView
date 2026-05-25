@@ -1,6 +1,7 @@
 ﻿using MetaView.Capability.ParameterManagement.Defaults;
 using MetaView.Capability.ParameterManagement.Sources;
 using MetaView.Core.DataAcquisition;
+using MetaView.Core.Imaging;
 using MetaView.Core.Imaging.Brightfield;
 using MetaView.Core.Laser;
 using MetaView.Core.MotionControl;
@@ -20,6 +21,7 @@ public sealed class EnvironmentRuntimeParameterProvider : IRuntimeParameterProvi
     private MotionSystemConfiguration? _motionSystemConfiguration;
     private DaqRuntimeConfiguration? _daqRuntimeConfiguration;
     private LaserRuntimeSettings? _laserRuntimeSettings;
+    private ImageStageNavigationSettings? _imageStageNavigationSettings;
 
     /// <inheritdoc />
     public OperationResult<BrightfieldCameraSettings> GetBrightfieldCameraSettings()
@@ -103,5 +105,26 @@ public sealed class EnvironmentRuntimeParameterProvider : IRuntimeParameterProvi
         }
 
         return OperationResult.Ok("Laser runtime settings updated.");
+    }
+
+    /// <inheritdoc />
+    public OperationResult<ImageStageNavigationSettings> GetImageStageNavigationSettings()
+    {
+        lock (_syncRoot)
+        {
+            _imageStageNavigationSettings ??= ImageStageNavigationParameterDefaults.Create(_reader);
+            return OperationResult<ImageStageNavigationSettings>.Ok(_imageStageNavigationSettings, "Image-stage navigation settings loaded.");
+        }
+    }
+
+    /// <inheritdoc />
+    public OperationResult SetImageStageNavigationSettings(ImageStageNavigationSettings settings)
+    {
+        lock (_syncRoot)
+        {
+            _imageStageNavigationSettings = settings;
+        }
+
+        return OperationResult.Ok("Image-stage navigation settings updated.");
     }
 }

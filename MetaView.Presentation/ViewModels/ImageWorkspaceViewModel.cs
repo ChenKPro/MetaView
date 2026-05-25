@@ -4,8 +4,12 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using ImageViewer2D.Controls.Models;
+using MetaView.Core.Imaging;
 using MetaView.Core.Imaging.Brightfield;
 using MetaView.Core.Imaging.Signal;
+using MetaView.Core.MotionControl;
+using MetaView.Core.Parameters;
 using MetaView.Presentation.Infrastructure;
 using MetaView.Services.Interfaces;
 using Prism.Events;
@@ -23,6 +27,8 @@ public sealed class ImageWorkspaceViewModel : MetaView.Presentation.Infrastructu
 {
     private const string SignalChartId = "MetaView.Signal.Trace";
     private readonly IPlotService _signalPlotService;
+    private readonly IMotionControlCapability _motionControlCapability;
+    private readonly ImageStageNavigationSettings _navigationSettings;
     private string _selectedView = "Live";
     private bool _roiVisible = true;
     private double _roiLeft = 280;
@@ -42,8 +48,14 @@ public sealed class ImageWorkspaceViewModel : MetaView.Presentation.Infrastructu
     /// <summary>
     /// Initializes a new instance of the <see cref="ImageWorkspaceViewModel" /> class.
     /// </summary>
-    public ImageWorkspaceViewModel(IPlotServiceFactory plotServiceFactory, IEventAggregator eventAggregator)
+    public ImageWorkspaceViewModel(
+        IPlotServiceFactory plotServiceFactory,
+        IEventAggregator eventAggregator,
+        IMotionControlCapability motionControlCapability,
+        IRuntimeParameterProvider parameterProvider)
     {
+        _motionControlCapability = motionControlCapability;
+        _navigationSettings = parameterProvider.GetImageStageNavigationSettings().Data ?? new ImageStageNavigationSettings();
         _signalPlotService = plotServiceFactory.Create(SignalChartId);
         _signalPlotService.SetBehavior(new PlotBehavior { AutoScale = true, ShowCrosshair = true, ShowLegend = true });
         _signalPlotService.SetStyle(CreateSignalPlotStyle());
@@ -154,11 +166,74 @@ public sealed class ImageWorkspaceViewModel : MetaView.Presentation.Infrastructu
     public ICommand ToggleRoiCommand { get; }
     public ICommand ShiftRoiCommand { get; }
 
+    public async Task MoveStageToImageCenterAsync(ImageViewerMouseButtonEventArgs args)
+    {
+        var imageSize = GetCurrentImageSize();
+        if (imageSize.Width <= 0 || imageSize.Height <= 0)
+        {
+            return;
+        }
+
+        var dx = ApplyDirection(args.ImagePosition.X - imageSize.Width / 2.0, _navigationSettings.InvertX) * _navigationSettings.MicronsPerPixelX;
+        var dy = ApplyDirection(args.ImagePosition.Y - imageSize.Height / 2.0, _navigationSettings.InvertY) * _navigationSettings.MicronsPerPixelY;
+        await MoveStageRelativeAsync(dx, dy, 0).ConfigureAwait(true);
+    }
+
+    public Task MoveStageByImageDragAsync(ImageViewerMouseEventArgs previous, ImageViewerMouseEventArgs current)
+    {
+        var dx = ApplyDirection(current.ImagePosition.X - previous.ImagePosition.X, _navigationSettings.InvertX) * _navigationSettings.MicronsPerPixelX;
+        var dy = ApplyDirection(current.ImagePosition.Y - previous.ImagePosition.Y, _navigationSettings.InvertY) * _navigationSettings.MicronsPerPixelY;
+        return MoveStageRelativeAsync(dx, dy, 0);
+    }
+
+    public Task MoveStageByMouseWheelAsync(ImageViewerMouseWheelEventArgs args)
+    {
+        var steps = args.Delta / 120.0;
+        var dz = ApplyDirection(steps, _navigationSettings.InvertZ) * _navigationSettings.WheelStepMicronsZ;
+        return MoveStageRelativeAsync(0, 0, dz);
+    }
+
     private void ShiftRoi()
     {
         RoiLeft = RoiLeft > 520 ? 180 : RoiLeft + 80;
         RoiTop = RoiTop > 300 ? 120 : RoiTop + 35;
         ActiveTool = "ROI adjusted";
+    }
+
+    private async Task MoveStageRelativeAsync(double dx, double dy, double dz)
+    {
+        if (Math.Abs(dx) > double.Epsilon)
+        {
+            await _motionControlCapability.MoveRelativeAsync(MotionAxis.X, dx, CancellationToken.None).ConfigureAwait(true);
+        }
+
+        if (Math.Abs(dy) > double.Epsilon)
+        {
+            await _motionControlCapability.MoveRelativeAsync(MotionAxis.Y, dy, CancellationToken.None).ConfigureAwait(true);
+        }
+
+        if (Math.Abs(dz) > double.Epsilon)
+        {
+            await _motionControlCapability.MoveRelativeAsync(MotionAxis.Z, dz, CancellationToken.None).ConfigureAwait(true);
+        }
+    }
+
+    private static double ApplyDirection(double value, bool invert)
+    {
+        return invert ? -value : value;
+    }
+
+    private Size GetCurrentImageSize()
+    {
+        if (_signalImageSource is BitmapSource signalBitmap)
+        {
+            return new Size(signalBitmap.PixelWidth, signalBitmap.PixelHeight);
+        }
+
+        var image = LiveImageSource;
+        return image is BitmapSource bitmap
+            ? new Size(bitmap.PixelWidth, bitmap.PixelHeight)
+            : Size.Empty;
     }
 
     private GridLength GetAnalysisPanelWidth(string panel)

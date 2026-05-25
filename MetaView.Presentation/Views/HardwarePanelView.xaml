@@ -495,9 +495,9 @@
                                         </Grid.ColumnDefinitions>
 
                                         <StackPanel>
-                                            <Button Content="Save" Style="{StaticResource MotionButton}" Margin="0,0,0,5" />
-                                            <Button Content="Pos" Style="{StaticResource MotionButton}" Margin="0,0,0,5" />
-                                            <Button Content="Unload" Style="{StaticResource MotionButton}" Margin="0" />
+                                            <Button Content="Save" Command="{Binding SavePositionCommand}" Style="{StaticResource MotionButton}" Margin="0,0,0,5" />
+                                            <Button Content="Pos" Command="{Binding MoveToSavedPositionCommand}" Style="{StaticResource MotionButton}" Margin="0,0,0,5" />
+                                            <Button Content="Unload" Command="{Binding UnloadCommand}" Style="{StaticResource MotionButton}" Margin="0" />
                                         </StackPanel>
 
                                         <Grid Grid.Column="1" Width="166" Height="166" HorizontalAlignment="Center" Margin="10,0">

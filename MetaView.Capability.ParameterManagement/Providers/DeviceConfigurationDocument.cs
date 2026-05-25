@@ -1,4 +1,5 @@
 using MetaView.Core.DataAcquisition;
+using MetaView.Core.Imaging;
 using MetaView.Core.Imaging.Brightfield;
 using MetaView.Core.Laser;
 using MetaView.Core.MotionControl;
@@ -29,4 +30,9 @@ internal sealed record DeviceConfigurationDocument
     /// Gets the optional laser runtime settings.
     /// </summary>
     public LaserRuntimeSettings? Laser { get; init; }
+
+    /// <summary>
+    /// Gets the optional image-to-stage navigation settings.
+    /// </summary>
+    public ImageStageNavigationSettings? ImageStageNavigation { get; init; }
 }

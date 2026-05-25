@@ -12,8 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Events\" />
-    <Folder Include="Helps\" />
     <Folder Include="Models\" />
   </ItemGroup>
 

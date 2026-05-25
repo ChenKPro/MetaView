@@ -29,4 +29,9 @@ public enum RoiToolMode
     /// Places or edits the red and blue crosshair lines.
     /// </summary>
     Crosshair,
+
+    /// <summary>
+    /// Reserves mouse interaction for stage navigation in the host application.
+    /// </summary>
+    StageNavigation,
 }

@@ -4,14 +4,14 @@
     xmlns:local="clr-namespace:ImageViewer2D.Controls">
 
     <Style x:Key="ImageViewerToolButton" TargetType="{x:Type ToggleButton}">
-        <Setter Property="Width" Value="30" />
+        <Setter Property="Width" Value="38" />
         <Setter Property="Height" Value="30" />
         <Setter Property="Margin" Value="0,0,0,5" />
         <Setter Property="Foreground" Value="#D7E6F2" />
         <Setter Property="Background" Value="#263540" />
         <Setter Property="BorderBrush" Value="#40576A" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontSize" Value="11" />
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Template">
@@ -66,7 +66,7 @@
                             </Canvas>
 
                             <Border x:Name="PART_ToolBar"
-                                    Width="42"
+                                    Width="50"
                                     Margin="10"
                                     Padding="5"
                                     HorizontalAlignment="Left"
@@ -77,31 +77,35 @@
                                     CornerRadius="3">
                                 <StackPanel>
                                     <ToggleButton x:Name="PART_PanTool"
-                                                  Content="↕"
+                                                  Content="Pan"
                                                   ToolTip="Pan"
                                                   Style="{StaticResource ImageViewerToolButton}" />
                                     <ToggleButton x:Name="PART_SelectTool"
-                                                  Content="↖"
+                                                  Content="Sel"
                                                   ToolTip="Select ROI"
                                                   Style="{StaticResource ImageViewerToolButton}" />
                                     <ToggleButton x:Name="PART_RectangleTool"
-                                                  Content="□"
+                                                  Content="Rect"
                                                   ToolTip="Rectangle ROI"
                                                   Style="{StaticResource ImageViewerToolButton}" />
                                     <ToggleButton x:Name="PART_EllipseTool"
-                                                  Content="○"
+                                                  Content="Oval"
                                                   ToolTip="Ellipse ROI"
                                                   Style="{StaticResource ImageViewerToolButton}" />
                                     <ToggleButton x:Name="PART_CrosshairTool"
                                                   Content="+"
                                                   ToolTip="Crosshair"
                                                   Style="{StaticResource ImageViewerToolButton}" />
+                                    <ToggleButton x:Name="PART_StageNavigationTool"
+                                                  Content="Stage"
+                                                  ToolTip="Stage navigation"
+                                                  Style="{StaticResource ImageViewerToolButton}" />
                                     <Rectangle Height="1"
                                                Margin="2,1,2,6"
                                                Fill="#40576A"
                                                Opacity="0.9" />
                                     <ToggleButton x:Name="PART_ClearRoisTool"
-                                                  Content="×"
+                                                  Content="Clear"
                                                   ToolTip="Clear ROI and crosshair"
                                                   Margin="0"
                                                   Style="{StaticResource ImageViewerToolButton}" />

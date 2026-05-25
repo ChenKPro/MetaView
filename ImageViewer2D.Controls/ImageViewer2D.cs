@@ -29,6 +29,7 @@ namespace ImageViewer2D.Controls;
 [TemplatePart(Name = RectangleToolPartName, Type = typeof(ToggleButton))]
 [TemplatePart(Name = EllipseToolPartName, Type = typeof(ToggleButton))]
 [TemplatePart(Name = CrosshairToolPartName, Type = typeof(ToggleButton))]
+[TemplatePart(Name = StageNavigationToolPartName, Type = typeof(ToggleButton))]
 [TemplatePart(Name = ClearRoisToolPartName, Type = typeof(ButtonBase))]
 public sealed class ImageViewer2D : Control
 {
@@ -47,6 +48,7 @@ public sealed class ImageViewer2D : Control
     private const string RectangleToolPartName = "PART_RectangleTool";
     private const string EllipseToolPartName = "PART_EllipseTool";
     private const string CrosshairToolPartName = "PART_CrosshairTool";
+    private const string StageNavigationToolPartName = "PART_StageNavigationTool";
     private const string ClearRoisToolPartName = "PART_ClearRoisTool";
     private const double RoiEdgeHitTolerance = 6.0;
     private const double CrosshairHitTolerance = 6.0;
@@ -66,6 +68,7 @@ public sealed class ImageViewer2D : Control
     private ToggleButton? _rectangleTool;
     private ToggleButton? _ellipseTool;
     private ToggleButton? _crosshairTool;
+    private ToggleButton? _stageNavigationTool;
     private ButtonBase? _clearRoisTool;
     //private TextBlock? _statusText;
     private Point _lastMousePoint;
@@ -330,6 +333,7 @@ public sealed class ImageViewer2D : Control
         _rectangleTool = GetTemplateChild(RectangleToolPartName) as ToggleButton;
         _ellipseTool = GetTemplateChild(EllipseToolPartName) as ToggleButton;
         _crosshairTool = GetTemplateChild(CrosshairToolPartName) as ToggleButton;
+        _stageNavigationTool = GetTemplateChild(StageNavigationToolPartName) as ToggleButton;
         _clearRoisTool = GetTemplateChild(ClearRoisToolPartName) as ButtonBase;
         //_statusText = GetTemplateChild(StatusTextPartName) as TextBlock;
 
@@ -444,6 +448,7 @@ public sealed class ImageViewer2D : Control
         AttachToolButtonHandler(_rectangleTool);
         AttachToolButtonHandler(_ellipseTool);
         AttachToolButtonHandler(_crosshairTool);
+        AttachToolButtonHandler(_stageNavigationTool);
         AttachClearRoisToolHandler();
     }
 
@@ -493,6 +498,7 @@ public sealed class ImageViewer2D : Control
             _ when ReferenceEquals(sender, _rectangleTool) => RoiToolMode.Rectangle,
             _ when ReferenceEquals(sender, _ellipseTool) => RoiToolMode.Ellipse,
             _ when ReferenceEquals(sender, _crosshairTool) => RoiToolMode.Crosshair,
+            _ when ReferenceEquals(sender, _stageNavigationTool) => RoiToolMode.StageNavigation,
             _ => ToolMode
         };
         UpdateToolButtonStates();
@@ -505,6 +511,7 @@ public sealed class ImageViewer2D : Control
         SetToolChecked(_rectangleTool, ToolMode == RoiToolMode.Rectangle);
         SetToolChecked(_ellipseTool, ToolMode == RoiToolMode.Ellipse);
         SetToolChecked(_crosshairTool, ToolMode == RoiToolMode.Crosshair);
+        SetToolChecked(_stageNavigationTool, ToolMode == RoiToolMode.StageNavigation);
     }
 
     private static void SetToolChecked(ToggleButton? button, bool isChecked)
@@ -559,6 +566,12 @@ public sealed class ImageViewer2D : Control
     private void OnSurfaceMouseWheel(object sender, MouseWheelEventArgs e)
     {
         RaiseImageMouseWheel(e);
+        if (ToolMode == RoiToolMode.StageNavigation)
+        {
+            e.Handled = true;
+            return;
+        }
+
         var factor = e.Delta > 0 ? 1.15 : 1.0 / 1.15;
         _viewport.ZoomAt(e.GetPosition(_surface), factor, maximumScale: 20.0);
         RenderAll();
@@ -578,6 +591,11 @@ public sealed class ImageViewer2D : Control
         _lastMousePoint = e.GetPosition(_surface);
         RaiseImageMouseDown(e);
         var imagePoint = _viewport.ScreenToImage(_lastMousePoint);
+
+        if (ToolMode == RoiToolMode.StageNavigation)
+        {
+            return;
+        }
 
         if (TryBeginAutoRoiSelection(_lastMousePoint, imagePoint))
         {
@@ -628,6 +646,12 @@ public sealed class ImageViewer2D : Control
         var currentPoint = e.GetPosition(_surface);
         UpdateStatus(_viewport.ScreenToImage(currentPoint));
         RaiseImageMouseMove(e);
+
+        if (ToolMode == RoiToolMode.StageNavigation)
+        {
+            Cursor = Cursors.SizeAll;
+            return;
+        }
 
         if (e.LeftButton != MouseButtonState.Pressed && _activeRoi is null && _editingRoi is null)
         {
