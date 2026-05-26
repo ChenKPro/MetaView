@@ -70,13 +70,25 @@
                     <MenuItem Header="Export" />
                 </MenuItem>
                 <MenuItem Header="Calibration">
-                    <MenuItem Header="Wavenumber Calibration" />
-                    <MenuItem Header="BBO Curve Calibration" />
-                    <MenuItem Header="Standard Spectra Import" />
-                    <MenuItem Header="Update Flat Field Correction Data" />
-                    <MenuItem Header="Add Spectral Window" />
+                    <MenuItem Header="Time / Spectral">
+                        <MenuItem Header="Zero-Time" />
+                        <MenuItem Header="CRS" />
+                        <MenuItem Header="Multi-Substance" />
+                    </MenuItem>
+                    <MenuItem Header="Spectral Windows">
+                        <MenuItem Header="Add Window" />
+                        <MenuItem Header="Custom Window" />
+                        <MenuItem Header="Import Standards" />
+                    </MenuItem>
                     <Separator />
-                    <MenuItem Header="Custom Spectral Window" />
+                    <MenuItem Header="Correction Data">
+                        <MenuItem Header="Update Flat Field" />
+                        <MenuItem Header="BBO Curve" />
+                    </MenuItem>
+                    <MenuItem Header="Registration / Offset">
+                        <MenuItem Header="Round-Trip Offset" />
+                        <MenuItem Header="Modal Image Match" />
+                    </MenuItem>
                 </MenuItem>
                 <MenuItem Header="Acquisition">
                     <MenuItem Header="Live Preview" />

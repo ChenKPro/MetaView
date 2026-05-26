@@ -44,6 +44,7 @@ public sealed class ImageWorkspaceViewModel : MetaView.Presentation.Infrastructu
     private PointCollection _ai1Points = [];
     private PointCollection _ai2Points = [];
     private PointCollection _ai3Points = [];
+    private string _mousePositionText = "Mouse  X -- um  Y -- um";
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ImageWorkspaceViewModel" /> class.
@@ -162,9 +163,17 @@ public sealed class ImageWorkspaceViewModel : MetaView.Presentation.Infrastructu
     public PointCollection Ai1Points { get => _ai1Points; private set => SetProperty(ref _ai1Points, value); }
     public PointCollection Ai2Points { get => _ai2Points; private set => SetProperty(ref _ai2Points, value); }
     public PointCollection Ai3Points { get => _ai3Points; private set => SetProperty(ref _ai3Points, value); }
+    public string MousePositionText { get => _mousePositionText; private set => SetProperty(ref _mousePositionText, value); }
 
     public ICommand ToggleRoiCommand { get; }
     public ICommand ShiftRoiCommand { get; }
+
+    public void UpdateMousePosition(ImageViewerMouseEventArgs args)
+    {
+        var x = args.ImagePosition.X * _navigationSettings.MicronsPerPixelX;
+        var y = args.ImagePosition.Y * _navigationSettings.MicronsPerPixelY;
+        MousePositionText = $"Mouse  X {x:0.00} um  Y {y:0.00} um";
+    }
 
     public async Task MoveStageToImageCenterAsync(ImageViewerMouseButtonEventArgs args)
     {

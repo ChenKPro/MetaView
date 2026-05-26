@@ -417,7 +417,7 @@
                             <TextBlock Text="Pixel 0.43 um" Foreground="{StaticResource BrushMuted}" Margin="0,0,18,0" />
                             <TextBlock Text="Image 86.42 um" Foreground="{StaticResource BrushMuted}" Margin="0,0,18,0" />
                             <TextBlock Text="FPS 1.18" Foreground="{StaticResource BrushMuted}" Margin="0,0,18,0" />
-                            <TextBlock Text="Mouse  X 0.00 um  Y 0.00 um" Foreground="{StaticResource BrushMuted}" />
+                            <TextBlock Text="{Binding MousePositionText}" Foreground="{StaticResource BrushMuted}" />
                         </StackPanel>
                         <StackPanel DockPanel.Dock="Right"
                                     Orientation="Horizontal"
