@@ -84,7 +84,7 @@ public sealed class FoundationBrightfieldCameraCapability(IEventAggregator event
                 return OperationResult.Error("No Foundation camera was detected.");
             }
         }
-
+         camera.GetAvailableCameraList();
         var connectResult = await camera.ConnectAsync(cameraId, cancellationToken).ConfigureAwait(false);
         if (!connectResult.Success)
         {
@@ -112,17 +112,17 @@ public sealed class FoundationBrightfieldCameraCapability(IEventAggregator event
             return OperationResult.Error("Brightfield camera is not connected.");
         }
 
-        var parameterResult = _camera.SetCameraParameters(new CameraParameters
-        {
-            ExposureTime = settings.ExposureTime,
-            Gain = settings.Gain,
-            Gamma = settings.Gamma,
-            FrameRate = settings.FrameRate
-        });
-        if (!parameterResult.Success)
-        {
-            return ToOperationResult(parameterResult);
-        }
+        //var parameterResult = _camera.SetCameraParameters(new CameraParameters
+        //{
+        //    ExposureTime = settings.ExposureTime,
+        //    Gain = settings.Gain,
+        //    Gamma = settings.Gamma,
+        //    FrameRate = settings.FrameRate
+        //});
+        //if (!parameterResult.Success)
+        //{
+        //    return ToOperationResult(parameterResult);
+        //}
 
         var triggerResult = _camera.SetTriggerMode(settings.TriggerEnabled ? FoundationTriggerMode.ON : FoundationTriggerMode.OFF);
         if (!triggerResult.Success)

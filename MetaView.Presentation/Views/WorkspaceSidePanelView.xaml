@@ -64,16 +64,28 @@
 
         <Style x:Key="LogAlertButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
             <Setter Property="HorizontalContentAlignment" Value="Left" />
-            <Setter Property="Padding" Value="0" />
+            <Setter Property="Padding" Value="6,3" />
             <Setter Property="Margin" Value="0,0,0,0" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderBrush" Value="Transparent" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                          Margin="{TemplateBinding Padding}" />
+                        <Border x:Name="ButtonChrome"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="3">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              Margin="{TemplateBinding Padding}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonChrome" Property="Background" Value="#142433" />
+                                <Setter TargetName="ButtonChrome" Property="BorderBrush" Value="#29475E" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -120,26 +132,26 @@
                     Padding="8">
                 <StackPanel>
                     <DockPanel LastChildFill="False" Margin="0,0,0,8">
-                        <TextBlock Text="RESPICE" Style="{StaticResource AreaTitle}" Margin="0" />
+                        <TextBlock Text="Recipe" Style="{StaticResource AreaTitle}" Margin="0" />
                         <Border DockPanel.Dock="Right" Style="{StaticResource ChipBorder}" Padding="7,2">
-                            <TextBlock Text="Recent" FontSize="10" />
+                            <TextBlock Text="Save" FontSize="10" />
                         </Border>
                     </DockPanel>
-                    <Button Style="{StaticResource WorkspaceListButton}" Tag="SRS Gray / 2850 cm-1">
+                    <Button Style="{StaticResource WorkspaceListButton}" Tag="Respice1">
                         <StackPanel HorizontalAlignment="Left">
-                            <TextBlock Text="SRS Gray / 2850 cm-1" FontWeight="SemiBold" TextAlignment="Left" />
+                            <TextBlock Text="Recipe1" FontWeight="SemiBold" TextAlignment="Left" />
                             <TextBlock Text="20x / 800 x 800 / Round-trip / 10 us" Foreground="{StaticResource BrushMuted}" FontSize="10" TextAlignment="Left" />
                         </StackPanel>
                     </Button>
-                    <Button Style="{StaticResource WorkspaceListButton}" Tag="TPEF / 920 nm">
+                    <Button Style="{StaticResource WorkspaceListButton}" Tag="Respice2">
                         <StackPanel HorizontalAlignment="Left">
-                            <TextBlock Text="TPEF / 920 nm" TextAlignment="Left" />
+                            <TextBlock Text="Recipe2" TextAlignment="Left" />
                             <TextBlock Text="40x / 512 x 512 / Epi / 12 us" Foreground="{StaticResource BrushMuted}" FontSize="10" TextAlignment="Left" />
                         </StackPanel>
                     </Button>
-                    <Button Style="{StaticResource WorkspaceListButton}" Tag="Large Area / 4 x 4">
+                    <Button Style="{StaticResource WorkspaceListButton}" Tag="Respice3">
                         <StackPanel HorizontalAlignment="Left">
-                            <TextBlock Text="Large Area / 4 x 4" TextAlignment="Left" />
+                            <TextBlock Text="Recipe3" TextAlignment="Left" />
                             <TextBlock Text="10x / SRS / 10% overlap / auto save" Foreground="{StaticResource BrushMuted}" FontSize="10" TextAlignment="Left" />
                         </StackPanel>
                     </Button>
@@ -156,11 +168,7 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <DockPanel LastChildFill="False" Margin="0,0,0,8">
-                        <TextBlock Text="TASK LIST" Style="{StaticResource AreaTitle}" Margin="0" />
-                        <TextBlock DockPanel.Dock="Right"
-                                   Text="3 / 5"
-                                   Foreground="{StaticResource BrushMuted}"
-                                   FontSize="11" />
+                        <TextBlock Text="Task List" Style="{StaticResource AreaTitle}" Margin="0" />
                     </DockPanel>
                     <Border Grid.Row="1" Background="#101820" BorderBrush="{StaticResource BrushLine}" BorderThickness="1" CornerRadius="3">
                         <Grid>
@@ -179,46 +187,46 @@
                             <TextBlock Grid.Row="0" Grid.Column="0" Text="Task" Style="{StaticResource HudLabel}" VerticalAlignment="Center" Margin="8,0,0,0" />
                             <TextBlock Grid.Row="0" Grid.Column="1" Text="State" Style="{StaticResource HudLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" />
 
-                            <Button Grid.Row="1" Grid.ColumnSpan="2" Style="{StaticResource TaskTableRow}" Tag="Device Preflight">
+                            <Button Grid.Row="1" Grid.ColumnSpan="2" Style="{StaticResource TaskTableRow}" Tag="Task1">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="70" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Device Preflight" VerticalAlignment="Center" Margin="8,0,0,0" />
+                                    <TextBlock Text="Task1" VerticalAlignment="Center" Margin="8,0,0,0" />
                                     <TextBlock Grid.Column="1" Text="Ready" Foreground="{StaticResource BrushReady}" VerticalAlignment="Center" HorizontalAlignment="Left" />
                                 </Grid>
                             </Button>
 
-                            <Button Grid.Row="2" Grid.ColumnSpan="2" Style="{StaticResource TaskTableRow}" Tag="Live Tuning">
+                            <Button Grid.Row="2" Grid.ColumnSpan="2" Style="{StaticResource TaskTableRow}" Tag="Task2">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="70" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Live Tuning" VerticalAlignment="Center" Margin="8,0,0,0" />
+                                    <TextBlock Text="Task2" VerticalAlignment="Center" Margin="8,0,0,0" />
                                     <TextBlock Grid.Column="1" Text="Running" Foreground="{StaticResource BrushCyan}" VerticalAlignment="Center" HorizontalAlignment="Left" />
                                 </Grid>
                             </Button>
 
-                            <Button Grid.Row="3" Grid.ColumnSpan="2" Style="{StaticResource TaskTableRow}" Tag="Signal Check">
+                            <Button Grid.Row="3" Grid.ColumnSpan="2" Style="{StaticResource TaskTableRow}" Tag="Task3">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="70" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Signal Check" VerticalAlignment="Center" Margin="8,0,0,0" />
+                                    <TextBlock Text="Task3" VerticalAlignment="Center" Margin="8,0,0,0" />
                                     <TextBlock Grid.Column="1" Text="Wait" Foreground="{StaticResource BrushMuted}" VerticalAlignment="Center" HorizontalAlignment="Left" />
                                 </Grid>
                             </Button>
 
-                            <Button Grid.Row="4" Grid.ColumnSpan="2" Style="{StaticResource TaskTableRow}" Tag="Acquisition">
+                            <Button Grid.Row="4" Grid.ColumnSpan="2" Style="{StaticResource TaskTableRow}" Tag="Task4">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="70" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Acquisition" VerticalAlignment="Center" Margin="8,0,0,0" />
+                                    <TextBlock Text="Task4" VerticalAlignment="Center" Margin="8,0,0,0" />
                                     <TextBlock Grid.Column="1" Text="Idle" Foreground="{StaticResource BrushMuted}" VerticalAlignment="Center" HorizontalAlignment="Left" />
                                 </Grid>
                             </Button>
@@ -237,18 +245,13 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <DockPanel LastChildFill="False" Margin="0,0,0,8">
-                        <TextBlock Text="LOG" Style="{StaticResource AreaTitle}" Margin="0" />
+                        <TextBlock Text="Log" Style="{StaticResource AreaTitle}" Margin="0" />
                         <TextBlock DockPanel.Dock="Right"
-                                   Text="0 Warning"
-                                   Foreground="{StaticResource BrushMuted}"
+                                   Text="{Binding LogSummaryText}"
+                                   Foreground="{StaticResource BrushDanger}"
                                    FontSize="11" />
                     </DockPanel>
                     <Grid Grid.Row="1">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-
                         <ScrollViewer VerticalScrollBarVisibility="Auto"
                                       HorizontalScrollBarVisibility="Disabled"
                                       CanContentScroll="True"
@@ -256,47 +259,44 @@
                             <ItemsControl ItemsSource="{Binding WorkflowLogs}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding DisplayText}"
-                                                   Foreground="{StaticResource BrushMuted}"
-                                                   FontSize="11"
-                                                   TextTrimming="CharacterEllipsis"
-                                                   Margin="0,0,0,6">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
-                                                    <Setter Property="Foreground" Value="{StaticResource BrushMuted}" />
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding IsError}" Value="True">
-                                                            <Setter Property="Foreground" Value="{StaticResource BrushDanger}" />
-                                                            <Setter Property="FontWeight" Value="SemiBold" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
+                                        <StackPanel Margin="0,0,0,8">
+                                            <Button Style="{StaticResource LogAlertButton}"
+                                                    Click="LogEntry_OnClick">
+                                                <TextBlock Text="{Binding DisplayText}"
+                                                           FontSize="11"
+                                                           TextTrimming="CharacterEllipsis">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Foreground" Value="{StaticResource BrushMuted}" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding IsError}" Value="True">
+                                                                    <Setter Property="Foreground" Value="{StaticResource BrushDanger}" />
+                                                                    <Setter Property="FontWeight" Value="SemiBold" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </Button>
+
+                                            <Border x:Name="InlineDiagnostic"
+                                                    Visibility="Collapsed"
+                                                    Background="#101820"
+                                                        BorderBrush="{StaticResource BrushLine}"
+                                                        BorderThickness="1"
+                                                        CornerRadius="3"
+                                                    Padding="7"
+                                                    Margin="6,3,0,0">
+                                                <TextBlock Text="{Binding DiagnosticHint}"
+                                                           Foreground="{StaticResource BrushText}"
+                                                           FontSize="10"
+                                                           TextWrapping="Wrap" />
+                                            </Border>
+                                        </StackPanel>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                         </ScrollViewer>
-
-                        <StackPanel Grid.Row="1">
-                            <Button Style="{StaticResource LogAlertButton}" Click="LogAlert_OnClick">
-                            <TextBlock Text="Show latest diagnostic hint" Foreground="{StaticResource BrushText}" FontSize="11" />
-                            </Button>
-                            <Border x:Name="LogAlertDetails"
-                                    Visibility="Collapsed"
-                                    Background="#101820"
-                                    BorderBrush="{StaticResource BrushLine}"
-                                    BorderThickness="1"
-                                    CornerRadius="3"
-                                    Padding="7"
-                                    Margin="0,5,0,6">
-                                <StackPanel>
-                                    <TextBlock Text="Device: Tunable laser" Foreground="{StaticResource BrushMuted}" FontSize="10" />
-                                    <TextBlock Text="Expected: Warmup complete within 30 s" Foreground="{StaticResource BrushMuted}" FontSize="10" />
-                                    <TextBlock Text="Action: Check interlock, emission state, and laser IP connection." Foreground="{StaticResource BrushText}" FontSize="10" TextWrapping="Wrap" />
-                                </StackPanel>
-                            </Border>
-                        </StackPanel>
                     </Grid>
                 </Grid>
             </Border>
@@ -328,4 +328,5 @@
     </Popup>
     </Grid>
 </UserControl>
+
 

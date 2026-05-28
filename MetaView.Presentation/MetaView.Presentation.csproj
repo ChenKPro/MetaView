@@ -25,6 +25,7 @@
     <Content Include="Assets\pic.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Assets\metaview-u-sq.ico" />
   </ItemGroup>
 
 </Project>

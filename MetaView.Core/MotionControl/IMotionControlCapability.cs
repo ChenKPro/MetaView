@@ -43,6 +43,16 @@ public interface IMotionControlCapability
     Task<OperationResult> MoveAbsoluteAsync(MotionAxis axis, double position, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Starts continuous jog motion on one logical axis.
+    /// </summary>
+    Task<OperationResult> StartJogAsync(MotionAxis axis, double speed, MotionJogDirection direction, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Stops one logical axis.
+    /// </summary>
+    Task<OperationResult> StopAxisAsync(MotionAxis axis, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Stops all motion.
     /// </summary>
     Task<OperationResult> StopAsync(CancellationToken cancellationToken = default);

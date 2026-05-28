@@ -35,6 +35,9 @@ public partial class NumericStepper : UserControl
     public static readonly DependencyProperty DisplayTextProperty =
         DependencyProperty.Register(nameof(DisplayText), typeof(string), typeof(NumericStepper), new PropertyMetadata("0"));
 
+    public static readonly DependencyProperty InputTextProperty =
+        DependencyProperty.Register(nameof(InputText), typeof(string), typeof(NumericStepper), new PropertyMetadata("0"));
+
     public static readonly DependencyProperty IsPopupOpenProperty =
         DependencyProperty.Register(nameof(IsPopupOpen), typeof(bool), typeof(NumericStepper), new PropertyMetadata(false));
 
@@ -84,6 +87,12 @@ public partial class NumericStepper : UserControl
     {
         get => (string)GetValue(DisplayTextProperty);
         private set => SetValue(DisplayTextProperty, value);
+    }
+
+    public string InputText
+    {
+        get => (string)GetValue(InputTextProperty);
+        set => SetValue(InputTextProperty, value);
     }
 
     public bool IsPopupOpen
@@ -145,17 +154,93 @@ public partial class NumericStepper : UserControl
         e.Handled = true;
     }
 
+    private void OnValueTextBoxGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+    {
+        IsPopupOpen = true;
+        if (!ValueTextBox.IsMouseCaptureWithin)
+        {
+            ValueTextBox.SelectAll();
+        }
+    }
+
+    private void OnValueTextBoxPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        IsPopupOpen = true;
+    }
+
+    private void OnValueTextBoxLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+    {
+        CommitInputText();
+    }
+
+    private void OnValueTextBoxPreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Enter)
+        {
+            CommitInputText();
+            e.Handled = true;
+            return;
+        }
+
+        if (e.Key == Key.Escape)
+        {
+            InputText = DisplayText;
+            IsPopupOpen = false;
+            Keyboard.ClearFocus();
+            e.Handled = true;
+            return;
+        }
+
+        if (e.Key == Key.Up)
+        {
+            CommitInputText();
+            ChangeValue(Step);
+            e.Handled = true;
+            return;
+        }
+
+        if (e.Key == Key.Down)
+        {
+            CommitInputText();
+            ChangeValue(-Step);
+            e.Handled = true;
+        }
+    }
+
     private void ChangeValue(double delta)
     {
         Value = Math.Round(Value + delta, Math.Max(0, DecimalPlaces));
     }
 
-    private void UpdateDisplayText()
+    private void CommitInputText()
+    {
+        var text = InputText?.Trim() ?? string.Empty;
+        if (!string.IsNullOrWhiteSpace(Unit) && text.EndsWith(Unit, StringComparison.OrdinalIgnoreCase))
+        {
+            text = text[..^Unit.Length].Trim();
+        }
+
+        if (double.TryParse(text, NumberStyles.Float, CultureInfo.CurrentCulture, out var currentCultureValue) ||
+            double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out currentCultureValue))
+        {
+            Value = currentCultureValue;
+            UpdateDisplayText(forceInputText: true);
+            return;
+        }
+
+        InputText = DisplayText;
+    }
+
+    private void UpdateDisplayText(bool forceInputText = false)
     {
         var places = Math.Max(0, DecimalPlaces);
         var format = places == 0 ? "0" : "0." + new string('0', places);
         var valueText = Value.ToString(format, CultureInfo.InvariantCulture);
         DisplayText = string.IsNullOrWhiteSpace(Unit) ? valueText : $"{valueText} {Unit}";
+        if (forceInputText || !ValueTextBox.IsKeyboardFocusWithin)
+        {
+            InputText = DisplayText;
+        }
     }
 }
 

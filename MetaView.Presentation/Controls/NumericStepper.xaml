@@ -118,36 +118,21 @@
                         <ColumnDefinition Width="25" />
                     </Grid.ColumnDefinitions>
 
-                    <ToggleButton x:Name="ValueButton"
-                                  Background="Transparent"
-                                  BorderBrush="Transparent"
-                                  BorderThickness="0"
-                                  Focusable="False"
-                                  Padding="9,0"
-                                  IsChecked="{Binding IsPopupOpen, ElementName=Root, Mode=TwoWay}">
-                        <ToggleButton.Template>
-                            <ControlTemplate TargetType="ToggleButton">
-                                <Border x:Name="ValueChrome"
-                                        Background="{TemplateBinding Background}"
-                                        Padding="{TemplateBinding Padding}">
-                                    <TextBlock Text="{Binding DisplayText, ElementName=Root}"
-                                               Foreground="{StaticResource BrushText}"
-                                               FontSize="13"
-                                               FontWeight="SemiBold"
-                                               VerticalAlignment="Center"
-                                               TextTrimming="CharacterEllipsis" />
-                                </Border>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="ValueChrome" Property="Background" Value="#101820" />
-                                    </Trigger>
-                                    <Trigger Property="IsChecked" Value="True">
-                                        <Setter TargetName="ValueChrome" Property="Background" Value="#101820" />
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </ToggleButton.Template>
-                    </ToggleButton>
+                    <TextBox x:Name="ValueTextBox"
+                             Text="{Binding InputText, ElementName=Root, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             MinHeight="0"
+                             Height="Auto"
+                             Margin="0"
+                             Padding="9,0"
+                             FontSize="13"
+                             FontWeight="SemiBold"
+                             VerticalContentAlignment="Center"
+                             PreviewMouseLeftButtonDown="OnValueTextBoxPreviewMouseLeftButtonDown"
+                             GotKeyboardFocus="OnValueTextBoxGotKeyboardFocus"
+                             LostKeyboardFocus="OnValueTextBoxLostKeyboardFocus"
+                             PreviewKeyDown="OnValueTextBoxPreviewKeyDown" />
 
                     <Border Grid.Column="1"
                             Width="1"
@@ -214,7 +199,6 @@
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <Slider Grid.Row="0"
                             Style="{StaticResource StepperSlider}"
@@ -223,12 +207,6 @@
                             SmallChange="{Binding Step, ElementName=Root}"
                             TickFrequency="{Binding Step, ElementName=Root}"
                             Value="{Binding Value, ElementName=Root, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                    <TextBlock Grid.Row="1"
-                               Text="{Binding DisplayText, ElementName=Root}"
-                               Foreground="{StaticResource BrushMuted}"
-                               FontSize="13"
-                               FontWeight="SemiBold"
-                               Margin="0,5,0,0" />
                 </Grid>
             </Border>
         </Popup>

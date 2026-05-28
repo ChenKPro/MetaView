@@ -544,16 +544,27 @@ public sealed class ImageViewer2D : Control
 
         if (Source is BitmapSource bitmap)
         {
-            _viewport.SetImageSize(new Size(bitmap.PixelWidth, bitmap.PixelHeight));
+            var imageSize = new Size(bitmap.PixelWidth, bitmap.PixelHeight);
+            var shouldFitToView = !IsSameSize(_viewport.ImageSize, imageSize);
+            _viewport.SetImageSize(imageSize);
             if (_surface is not null)
             {
                 _viewport.SetViewportSize(new Size(_surface.ActualWidth, _surface.ActualHeight));
             }
 
-            _viewport.FitToView();
+            if (shouldFitToView)
+            {
+                _viewport.FitToView();
+            }
         }
 
         RenderAll();
+    }
+
+    private static bool IsSameSize(Size left, Size right)
+    {
+        return Math.Abs(left.Width - right.Width) < 0.5
+            && Math.Abs(left.Height - right.Height) < 0.5;
     }
 
     private void OnSurfaceSizeChanged(object sender, SizeChangedEventArgs e)

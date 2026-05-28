@@ -44,6 +44,11 @@ public sealed class ImageWorkspaceViewModel : MetaView.Presentation.Infrastructu
     private PointCollection _ai1Points = [];
     private PointCollection _ai2Points = [];
     private PointCollection _ai3Points = [];
+    private string _mousePositionText = "Mouse  X 0 px  Y 0 px";
+    private string _stageInteractionModeText = "Mode  Image pan";
+    private int _acquiredImageCount;
+    private MotionJogDirection? _activeImageJogXDirection;
+    private MotionJogDirection? _activeImageJogYDirection;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ImageWorkspaceViewModel" /> class.
@@ -158,6 +163,9 @@ public sealed class ImageWorkspaceViewModel : MetaView.Presentation.Infrastructu
     public GridLength HistogramPanelWidth => GetAnalysisPanelWidth("Histogram");
     public GridLength ContextPanelWidth => GetAnalysisPanelWidth("Context");
     public string SignalPlotChartId => SignalChartId;
+    public string MousePositionText { get => _mousePositionText; private set => SetProperty(ref _mousePositionText, value); }
+    public string StageInteractionModeText { get => _stageInteractionModeText; private set => SetProperty(ref _stageInteractionModeText, value); }
+    public string AcquiredImageCountText => $"Images {_acquiredImageCount}";
     public PointCollection Ai0Points { get => _ai0Points; private set => SetProperty(ref _ai0Points, value); }
     public PointCollection Ai1Points { get => _ai1Points; private set => SetProperty(ref _ai1Points, value); }
     public PointCollection Ai2Points { get => _ai2Points; private set => SetProperty(ref _ai2Points, value); }
@@ -165,6 +173,16 @@ public sealed class ImageWorkspaceViewModel : MetaView.Presentation.Infrastructu
 
     public ICommand ToggleRoiCommand { get; }
     public ICommand ShiftRoiCommand { get; }
+
+    public void UpdateMousePosition(ImageViewerMouseEventArgs args)
+    {
+        MousePositionText = $"Mouse  X {args.ImagePosition.X:0} px  Y {args.ImagePosition.Y:0} px";
+    }
+
+    public void SetStageInteractionMode(bool isStageLinked)
+    {
+        StageInteractionModeText = isStageLinked ? "Mode  Stage link" : "Mode  Image pan";
+    }
 
     public async Task MoveStageToImageCenterAsync(ImageViewerMouseButtonEventArgs args)
     {
@@ -179,11 +197,20 @@ public sealed class ImageWorkspaceViewModel : MetaView.Presentation.Infrastructu
         await MoveStageRelativeAsync(dx, dy, 0).ConfigureAwait(true);
     }
 
-    public Task MoveStageByImageDragAsync(ImageViewerMouseEventArgs previous, ImageViewerMouseEventArgs current)
+    public async Task StartStageImageDragJogAsync(ImageViewerMouseEventArgs previous, ImageViewerMouseEventArgs current)
     {
-        var dx = ApplyDirection(current.ImagePosition.X - previous.ImagePosition.X, _navigationSettings.InvertX) * _navigationSettings.MicronsPerPixelX;
-        var dy = ApplyDirection(current.ImagePosition.Y - previous.ImagePosition.Y, _navigationSettings.InvertY) * _navigationSettings.MicronsPerPixelY;
-        return MoveStageRelativeAsync(dx, dy, 0);
+        var dx = ApplyDirection(current.ImagePosition.X - previous.ImagePosition.X, _navigationSettings.InvertX);
+        var dy = ApplyDirection(current.ImagePosition.Y - previous.ImagePosition.Y, _navigationSettings.InvertY);
+        await SetImageDragJogAxisAsync(MotionAxis.X, ResolveJogDirection(dx), _activeImageJogXDirection).ConfigureAwait(true);
+        await SetImageDragJogAxisAsync(MotionAxis.Y, ResolveJogDirection(dy), _activeImageJogYDirection).ConfigureAwait(true);
+    }
+
+    public async Task StopStageImageJogAsync()
+    {
+        await _motionControlCapability.StopAxisAsync(MotionAxis.X, CancellationToken.None).ConfigureAwait(true);
+        await _motionControlCapability.StopAxisAsync(MotionAxis.Y, CancellationToken.None).ConfigureAwait(true);
+        _activeImageJogXDirection = null;
+        _activeImageJogYDirection = null;
     }
 
     public Task MoveStageByMouseWheelAsync(ImageViewerMouseWheelEventArgs args)
@@ -215,6 +242,42 @@ public sealed class ImageWorkspaceViewModel : MetaView.Presentation.Infrastructu
         if (Math.Abs(dz) > double.Epsilon)
         {
             await _motionControlCapability.MoveRelativeAsync(MotionAxis.Z, dz, CancellationToken.None).ConfigureAwait(true);
+        }
+    }
+
+    private MotionJogDirection? ResolveJogDirection(double delta)
+    {
+        if (Math.Abs(delta) < _navigationSettings.DragJogDeadZonePixels)
+        {
+            return null;
+        }
+
+        return delta < 0 ? MotionJogDirection.Negative : MotionJogDirection.Positive;
+    }
+
+    private async Task SetImageDragJogAxisAsync(MotionAxis axis, MotionJogDirection? direction, MotionJogDirection? activeDirection)
+    {
+        if (direction == activeDirection)
+        {
+            return;
+        }
+
+        if (direction is null)
+        {
+            await _motionControlCapability.StopAxisAsync(axis, CancellationToken.None).ConfigureAwait(true);
+        }
+        else
+        {
+            await _motionControlCapability.StartJogAsync(axis, _navigationSettings.DragJogSpeed, direction.Value, CancellationToken.None).ConfigureAwait(true);
+        }
+
+        if (axis == MotionAxis.X)
+        {
+            _activeImageJogXDirection = direction;
+        }
+        else if (axis == MotionAxis.Y)
+        {
+            _activeImageJogYDirection = direction;
         }
     }
 
@@ -281,6 +344,7 @@ public sealed class ImageWorkspaceViewModel : MetaView.Presentation.Infrastructu
     public void ApplySignalImageFrame(SignalImageFrame frame)
     {
         _signalImageSource = CreateSignalBitmapSource(frame);
+        IncrementAcquiredImageCount();
         RaisePropertyChanged(nameof(LiveImageSource));
     }
 
@@ -293,7 +357,14 @@ public sealed class ImageWorkspaceViewModel : MetaView.Presentation.Infrastructu
         }
 
         _signalImageSource = bitmap;
+        IncrementAcquiredImageCount();
         RaisePropertyChanged(nameof(LiveImageSource));
+    }
+
+    private void IncrementAcquiredImageCount()
+    {
+        _acquiredImageCount++;
+        RaisePropertyChanged(nameof(AcquiredImageCountText));
     }
 
     public void ApplySignalTraceFrame(SignalTraceFrame frame)

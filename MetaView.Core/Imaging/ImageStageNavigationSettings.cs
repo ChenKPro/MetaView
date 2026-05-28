@@ -21,6 +21,16 @@ public sealed record ImageStageNavigationSettings
     public double WheelStepMicronsZ { get; init; } = 0.5;
 
     /// <summary>
+    /// Gets the fixed XY jog speed used while dragging the image in stage-link mode.
+    /// </summary>
+    public double DragJogSpeed { get; init; } = 0.5;
+
+    /// <summary>
+    /// Gets the minimum mouse movement, in pixels, before a drag starts stage jog.
+    /// </summary>
+    public double DragJogDeadZonePixels { get; init; } = 2;
+
+    /// <summary>
     /// Gets a value indicating whether image X movement should be inverted before stage motion.
     /// </summary>
     public bool InvertX { get; init; }

@@ -78,7 +78,7 @@ public sealed class HardwarePanelViewModel : MetaView.Presentation.Infrastructur
     public double X { get => _x; set => SetProperty(ref _x, value); }
     public double Y { get => _y; set => SetProperty(ref _y, value); }
     public double Z { get => _z; set => SetProperty(ref _z, value); }
-    public double XyStep { get => _xyStep; set => SetProperty(ref _xyStep, value); }
+    public double XyStep { get => _xyStep; set => SetProperty(ref _xyStep, Math.Round(value, 2)); }
     public double ZStep { get => _zStep; set => SetProperty(ref _zStep, value); }
     public bool StageConnected { get => _stageConnected; set => SetProperty(ref _stageConnected, value); }
     public bool LaserConnected { get => _laserConnected; set => SetProperty(ref _laserConnected, value); }

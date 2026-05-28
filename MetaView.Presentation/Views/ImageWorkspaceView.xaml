@@ -307,6 +307,21 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="ImageStatusChip" TargetType="Border">
+            <Setter Property="Background" Value="#111C25" />
+            <Setter Property="BorderBrush" Value="#23394B" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="3" />
+            <Setter Property="Padding" Value="7,2" />
+            <Setter Property="Margin" Value="0,0,8,0" />
+        </Style>
+        <Style x:Key="AlgActionButton" TargetType="Button" BasedOn="{StaticResource MotionButton}">
+            <Setter Property="Height" Value="28" />
+            <Setter Property="MinWidth" Value="64" />
+            <Setter Property="Margin" Value="0,0,6,6" />
+            <Setter Property="Padding" Value="8,2" />
+            <Setter Property="FontSize" Value="11" />
+        </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -416,14 +431,17 @@
                                     VerticalAlignment="Center">
                             <TextBlock Text="Pixel 0.43 um" Foreground="{StaticResource BrushMuted}" Margin="0,0,18,0" />
                             <TextBlock Text="Image 86.42 um" Foreground="{StaticResource BrushMuted}" Margin="0,0,18,0" />
-                            <TextBlock Text="FPS 1.18" Foreground="{StaticResource BrushMuted}" Margin="0,0,18,0" />
-                            <TextBlock Text="Mouse  X 0.00 um  Y 0.00 um" Foreground="{StaticResource BrushMuted}" />
+                            <TextBlock Text="{Binding AcquiredImageCountText}" Foreground="{StaticResource BrushMuted}" Margin="0,0,18,0" />
+                            <TextBlock Text="{Binding MousePositionText}" Foreground="{StaticResource BrushMuted}" />
                         </StackPanel>
                         <StackPanel DockPanel.Dock="Right"
                                     Orientation="Horizontal"
                                     VerticalAlignment="Center">
-                            <TextBlock Text="Mouse ROI 200 x 200 px" Style="{StaticResource HudValue}" Margin="0,0,18,0" />
-                            <TextBlock Text="ROI adjusted" Foreground="{StaticResource BrushMuted}" />
+                            <Border Style="{StaticResource ImageStatusChip}">
+                                <TextBlock Text="{Binding StageInteractionModeText}" Foreground="{StaticResource BrushCyan}" FontSize="11" FontWeight="SemiBold" />
+                            </Border>
+                            <TextBlock Text="ROI 200 x 200 px" Style="{StaticResource HudValue}" Margin="0,0,12,0" />
+                            <TextBlock Text="Ready" Foreground="{StaticResource BrushMuted}" />
                         </StackPanel>
                     </DockPanel>
                 </Border>
@@ -475,7 +493,7 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <DockPanel Grid.Row="0" LastChildFill="False" Margin="0,0,0,2">
-                        <TextBlock Text="SIGNAL" Style="{StaticResource AreaTitle}" Margin="0" DockPanel.Dock="Left" />
+                        <TextBlock Text="Signal" Style="{StaticResource AreaTitle}" Margin="0" DockPanel.Dock="Left" />
                         <TextBlock Text="2850 cm-1" Style="{StaticResource HudValue}" FontSize="11" DockPanel.Dock="Right" />
                     </DockPanel>
                     <Border Grid.Row="1"
@@ -496,7 +514,7 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <DockPanel Grid.Row="0" LastChildFill="False" Margin="0,0,0,2">
-                        <TextBlock Text="HISTOGRAM" Style="{StaticResource AreaTitle}" Margin="0" DockPanel.Dock="Left" />
+                        <TextBlock Text="Histogram" Style="{StaticResource AreaTitle}" Margin="0" DockPanel.Dock="Left" />
                         <TextBlock Text="Intensity" Style="{StaticResource HudValue}" FontSize="11" DockPanel.Dock="Right" />
                     </DockPanel>
                     <controls:RatioBox Grid.Row="1" AspectRatio="2.2">
@@ -524,7 +542,16 @@
                         <TextBlock Text="AlgDetector" Style="{StaticResource AreaTitle}" Margin="0" DockPanel.Dock="Left" />
                         <TextBlock Text="Ready" Style="{StaticResource HudValue}" FontSize="11" DockPanel.Dock="Right" />
                     </DockPanel>
-                    <Grid Grid.Row="1" />
+                    <Grid Grid.Row="1" Margin="0,8,0,0">
+                        <UniformGrid Columns="3" Rows="2" HorizontalAlignment="Left">
+                            <Button Content="Alg1" Style="{StaticResource AlgActionButton}" />
+                            <Button Content="Alg2" Style="{StaticResource AlgActionButton}" />
+                            <Button Content="Alg3" Style="{StaticResource AlgActionButton}" />
+                            <Button Content="Alg4" Style="{StaticResource AlgActionButton}" />
+                            <Button Content="Alg5" Style="{StaticResource AlgActionButton}" />
+                            <Button Content="Alg6" Style="{StaticResource AlgActionButton}" />
+                        </UniformGrid>
+                    </Grid>
                 </Grid>
                     </Border>
                 </Grid>
@@ -533,6 +560,7 @@
 
     </Grid>
 </UserControl>
+
 
 
 

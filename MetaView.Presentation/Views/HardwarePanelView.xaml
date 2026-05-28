@@ -98,7 +98,7 @@
 
         <Style x:Key="StageRingSegmentPath" TargetType="Path">
             <Setter Property="Fill" Value="#22313A" />
-            <Setter Property="Stroke" Value="#304D64" />
+            <Setter Property="Stroke" Value="#263E51" />
             <Setter Property="StrokeThickness" Value="1.5" />
             <Setter Property="Stretch" Value="None" />
             <Setter Property="Opacity" Value="0.94" />
@@ -181,35 +181,35 @@
                     <ControlTemplate TargetType="RadioButton">
                         <Border x:Name="Chrome"
                                 Background="#151F28"
-                                BorderBrush="#29455C"
+                                BorderBrush="Transparent"
                                 BorderThickness="1"
-                                CornerRadius="3"
+                                CornerRadius="2"
                                 Padding="{TemplateBinding Padding}">
                             <Grid>
                                 <Border BorderBrush="#28FFFFFF"
                                         BorderThickness="1,1,0,0"
                                         CornerRadius="2"
-                                        Opacity="0.12" />
+                                        Opacity="0.06" />
                                 <ContentPresenter HorizontalAlignment="Center"
                                                   VerticalAlignment="Center" />
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Chrome" Property="BorderBrush" Value="#5AAEFF" />
-                                <Setter TargetName="Chrome" Property="Background" Value="#1D3040" />
+                                <Setter TargetName="Chrome" Property="BorderBrush" Value="#365A74" />
+                                <Setter TargetName="Chrome" Property="Background" Value="#182836" />
                                 <Setter Property="Foreground" Value="{StaticResource BrushText}" />
                             </Trigger>
                             <Trigger Property="IsChecked" Value="True">
                                 <Setter TargetName="Chrome" Property="Background">
                                     <Setter.Value>
                                         <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                            <GradientStop Color="#315E7A" Offset="0" />
-                                            <GradientStop Color="#1F4F78" Offset="1" />
+                                            <GradientStop Color="#28536F" Offset="0" />
+                                            <GradientStop Color="#1D4564" Offset="1" />
                                         </LinearGradientBrush>
                                     </Setter.Value>
                                 </Setter>
-                                <Setter TargetName="Chrome" Property="BorderBrush" Value="#7AC3FF" />
+                                <Setter TargetName="Chrome" Property="BorderBrush" Value="#5FA8DD" />
                                 <Setter Property="Foreground" Value="{StaticResource BrushText}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
@@ -247,7 +247,7 @@
                                                             Width="18"
                                                             Height="18"
                                                             Background="#182631"
-                                                            BorderBrush="#263B4D"
+                                                            BorderBrush="#203343"
                                                             BorderThickness="1"
                                                             CornerRadius="9"
                                                             Margin="0,0,7,0">
@@ -317,10 +317,6 @@
                                    Margin="8,0,0,0"
                                    VerticalAlignment="Center" />
                     </Grid>
-                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
-                        <Ellipse Width="8" Height="8" Fill="{StaticResource BrushReady}" Stroke="#234A2B" Margin="0,0,6,0" />
-                        <TextBlock Text="Ready" Foreground="{StaticResource BrushMuted}" FontSize="11" />
-                    </StackPanel>
                 </DockPanel>
             </Border>
 
@@ -330,11 +326,7 @@
                             <Border Style="{StaticResource SubtlePanel}" Margin="0,0,0,8">
                                 <StackPanel>
                                     <DockPanel LastChildFill="False" Margin="0,0,0,6">
-                                        <TextBlock Text="IMAGE SETTINGS" Style="{StaticResource AreaTitle}" Margin="0,0,0,0" />
-                                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                                            <Ellipse Width="8" Height="8" Fill="{StaticResource BrushCyan}" Stroke="#245B86" Margin="0,0,6,0" />
-                                            <TextBlock Text="Laser Scan" Foreground="{StaticResource BrushMuted}" FontSize="11" />
-                                        </StackPanel>
+                                        <TextBlock Text="Image Settings" Style="{StaticResource AreaTitle}" Margin="0,0,0,0" />
                                     </DockPanel>
 
                                     <UniformGrid Columns="2">
@@ -384,7 +376,6 @@
                                     <Expander IsExpanded="False" Margin="0,4,0,0" Style="{StaticResource AdvancedScanExpander}">
                                         <Expander.Header>
                                             <TextBlock TextTrimming="CharacterEllipsis">
-                                                <Run Text="Advanced  " Foreground="{StaticResource BrushText}" FontWeight="SemiBold" />
                                                 <Run Text="{Binding DwellTimeUs}" Foreground="{StaticResource BrushMuted}" />
                                                 <Run Text=" us \ Round-Trip \ " Foreground="{StaticResource BrushMuted}" />
                                                 <Run Text="{Binding LineSpeedHz}" Foreground="{StaticResource BrushMuted}" />
@@ -442,11 +433,7 @@
                             <Border Style="{StaticResource SubtlePanel}" Margin="0,0,0,8">
                                 <StackPanel>
                                     <DockPanel LastChildFill="False" Margin="0,0,0,8">
-                                        <TextBlock Text="STAGE MOTION" Style="{StaticResource AreaTitle}" Margin="0,0,0,0" />
-                                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                                            <Ellipse Width="7" Height="7" Fill="{StaticResource BrushReady}" Margin="0,0,6,0" />
-                                            <TextBlock Text="{Binding Status}" Foreground="{StaticResource BrushMuted}" FontSize="11" />
-                                        </StackPanel>
+                                        <TextBlock Text="Stage Motion" Style="{StaticResource AreaTitle}" Margin="0,0,0,0" />
                                     </DockPanel>
 
                                     <Grid Margin="0,0,0,6">
@@ -460,7 +447,7 @@
                                                     Minimum="1"
                                                     Maximum="50"
                                                     Value="{Binding XyStep, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                            <TextBlock Text="{Binding XyStep, StringFormat={}{0:0.##} um}"
+                                            <TextBlock Text="{Binding XyStep, StringFormat={}{0:0.00} mm}"
                                                        HorizontalAlignment="Center"
                                                        VerticalAlignment="Center"
                                                        FontWeight="SemiBold"
@@ -479,7 +466,7 @@
                                                     Minimum="0.1"
                                                     Maximum="5"
                                                     Value="{Binding ZStep, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                            <TextBlock Text="{Binding ZStep, StringFormat={}{0:0.##} um}"
+                                            <TextBlock Text="{Binding ZStep, StringFormat={}{0:0.##} mm}"
                                                        HorizontalAlignment="Center"
                                                        VerticalAlignment="Center"
                                                        FontWeight="SemiBold"
@@ -581,15 +568,15 @@
                                         <UniformGrid Columns="3">
                                             <StackPanel>
                                                 <TextBlock Text="X" Style="{StaticResource HudLabel}" />
-                                                <TextBlock Text="{Binding X, StringFormat={}{0:0.00} um}" Style="{StaticResource HudValue}" />
+                                                <TextBlock Text="{Binding X, StringFormat={}{0:0.00} mm}" Style="{StaticResource HudValue}" />
                                             </StackPanel>
                                             <StackPanel>
                                                 <TextBlock Text="Y" Style="{StaticResource HudLabel}" />
-                                                <TextBlock Text="{Binding Y, StringFormat={}{0:0.00} um}" Style="{StaticResource HudValue}" />
+                                                <TextBlock Text="{Binding Y, StringFormat={}{0:0.00} mm}" Style="{StaticResource HudValue}" />
                                             </StackPanel>
                                             <StackPanel>
                                                 <TextBlock Text="Z" Style="{StaticResource HudLabel}" />
-                                                <TextBlock Text="{Binding Z, StringFormat={}{0:0.00} um}" Style="{StaticResource HudValue}" />
+                                                <TextBlock Text="{Binding Z, StringFormat={}{0:0.00} mm}" Style="{StaticResource HudValue}" />
                                             </StackPanel>
                                         </UniformGrid>
                                     </Border>
@@ -600,7 +587,7 @@
                         <StackPanel>
                             <Border Style="{StaticResource SubtlePanel}">
                                 <StackPanel>
-                                    <TextBlock Text="LIGHT PATH" Style="{StaticResource AreaTitle}" />
+                                    <TextBlock Text="Light Path" Style="{StaticResource AreaTitle}" />
                                     <Grid Margin="0,0,0,10">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="86" />
@@ -609,19 +596,26 @@
                                         <TextBlock Text="Upper Mirror" Style="{StaticResource FieldLabel}" VerticalAlignment="Center" />
                                         <Border Grid.Column="1"
                                                 Background="#101820"
-                                                BorderBrush="#29455C"
+                                                BorderBrush="#203242"
                                                 BorderThickness="1"
                                                 CornerRadius="4"
                                                 Padding="2">
-                                            <UniformGrid Columns="2">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="1" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
                                                 <RadioButton Content="Brightfield"
                                                              GroupName="UpperMirror"
                                                              Style="{StaticResource LightPathSegmentButton}" />
-                                                <RadioButton Content="Laser Scan"
+                                                <Border Grid.Column="1" Background="#1B2D3A" Margin="0,4" />
+                                                <RadioButton Grid.Column="2"
+                                                             Content="Laser Scan"
                                                              GroupName="UpperMirror"
                                                              IsChecked="True"
                                                              Style="{StaticResource LightPathSegmentButton}" />
-                                            </UniformGrid>
+                                            </Grid>
                                         </Border>
                                     </Grid>
 
@@ -633,32 +627,35 @@
                                         <TextBlock Text="Lower Mirror" Style="{StaticResource FieldLabel}" VerticalAlignment="Center" />
                                         <Border Grid.Column="1"
                                                 Background="#101820"
-                                                BorderBrush="#29455C"
+                                                BorderBrush="#203242"
                                                 BorderThickness="1"
                                                 CornerRadius="4"
                                                 Padding="2">
-                                            <UniformGrid Columns="2">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="1" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
                                                 <RadioButton Content="Epi"
                                                              GroupName="LowerMirror"
                                                              Style="{StaticResource LightPathSegmentButton}" />
-                                                <RadioButton Content="Fwd"
+                                                <Border Grid.Column="1" Background="#1B2D3A" Margin="0,4" />
+                                                <RadioButton Grid.Column="2"
+                                                             Content="Fwd"
                                                              GroupName="LowerMirror"
                                                              IsChecked="True"
                                                              Style="{StaticResource LightPathSegmentButton}" />
-                                            </UniformGrid>
+                                            </Grid>
                                         </Border>
                                     </Grid>
 
                                     <Border Background="#101820"
-                                            BorderBrush="#29455C"
+                                            BorderBrush="#203242"
                                             BorderThickness="1"
                                             CornerRadius="4"
                                             Padding="9,7">
                                         <DockPanel LastChildFill="True">
-                                            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
-                                                <Ellipse Width="7" Height="7" Fill="{StaticResource BrushReady}" Margin="0,0,6,0" />
-                                                <TextBlock Text="Valid" Foreground="{StaticResource BrushMuted}" FontSize="11" />
-                                            </StackPanel>
                                             <TextBlock>
                                                 <Run Text="Path  " Foreground="{StaticResource BrushMuted}" />
                                                 <Run Text="Laser Scan" FontWeight="SemiBold" />
@@ -732,5 +729,6 @@
         </Grid>
     </Border>
 </UserControl>
+
 
 

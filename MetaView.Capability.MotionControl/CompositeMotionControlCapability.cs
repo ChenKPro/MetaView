@@ -22,6 +22,7 @@ public sealed class CompositeMotionControlCapability(MotionSystemConfiguration c
     private readonly Dictionary<string, dynamic> _controllers = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<MotionAxis, MotionAxisBinding> _axisBindings = configuration.AxisBindings.ToDictionary(binding => binding.Axis);
     private readonly Dictionary<MotionAxis, MotionAxisStatus> _lastStatuses = CreateInitialStatuses(configuration);
+    private readonly SemaphoreSlim _controllerGate = new(1, 1);
     private PeriodicTimer? _statusTimer;
     private CancellationTokenSource? _monitoringCancellation;
     private Task? _monitoringTask;
@@ -76,8 +77,18 @@ public sealed class CompositeMotionControlCapability(MotionSystemConfiguration c
             return OperationResult.Error(route.Message, route.ResultCode);
         }
 
-        var result = await route.Data.Controller.Home(route.Data.PhysicalAxisIndex, CreateHomeOptions(), cancellationToken);
-        RefreshAxisStatus(axis);
+        OperationResult result;
+        await _controllerGate.WaitAsync(cancellationToken).ConfigureAwait(false);
+        try
+        {
+            result = await route.Data.Controller.Home(route.Data.PhysicalAxisIndex, CreateHomeOptions(), cancellationToken);
+            RefreshAxisStatusCore(axis);
+        }
+        finally
+        {
+            _controllerGate.Release();
+        }
+
         PublishStatus();
         return ToOperationResult(result);
     }
@@ -91,8 +102,18 @@ public sealed class CompositeMotionControlCapability(MotionSystemConfiguration c
             return OperationResult.Error(route.Message, route.ResultCode);
         }
 
-        var result = await route.Data.Controller.MoveRelative(route.Data.PhysicalAxisIndex, distance, cancellationToken);
-        RefreshAxisStatus(axis);
+        OperationResult result;
+        await _controllerGate.WaitAsync(cancellationToken).ConfigureAwait(false);
+        try
+        {
+            result = await route.Data.Controller.MoveRelative(route.Data.PhysicalAxisIndex, distance, cancellationToken);
+            RefreshAxisStatusCore(axis);
+        }
+        finally
+        {
+            _controllerGate.Release();
+        }
+
         PublishStatus();
         return ToOperationResult(result);
     }
@@ -106,43 +127,120 @@ public sealed class CompositeMotionControlCapability(MotionSystemConfiguration c
             return OperationResult.Error(route.Message, route.ResultCode);
         }
 
-        var result = await route.Data.Controller.MoveAbsolute(route.Data.PhysicalAxisIndex, position, cancellationToken);
-        RefreshAxisStatus(axis);
+        OperationResult result;
+        await _controllerGate.WaitAsync(cancellationToken).ConfigureAwait(false);
+        try
+        {
+            result = await route.Data.Controller.MoveAbsolute(route.Data.PhysicalAxisIndex, position, cancellationToken);
+            RefreshAxisStatusCore(axis);
+        }
+        finally
+        {
+            _controllerGate.Release();
+        }
+
         PublishStatus();
         return ToOperationResult(result);
     }
 
     /// <inheritdoc />
-    public Task<OperationResult> StopAsync(CancellationToken cancellationToken = default)
+    public async Task<OperationResult> StartJogAsync(MotionAxis axis, double speed, MotionJogDirection direction, CancellationToken cancellationToken = default)
     {
-        var failed = new List<OperationResult>();
-        foreach (var endpoint in configuration.Controllers)
+        var route = ResolveRoute(axis);
+        if (!route.Success || route.Data is null)
         {
-            if (!_controllers.TryGetValue(endpoint.Id, out var controller))
-            {
-                continue;
-            }
-
-            for (var axisIndex = 0; axisIndex < endpoint.AxisCount; axisIndex++)
-            {
-                OperationResult result = controller.StopAxis(axisIndex, StopMode.Halt);
-                if (!result.Success)
-                {
-                    failed.Add(result);
-                }
-            }
+            return OperationResult.Error(route.Message, route.ResultCode);
         }
 
-        RefreshAllStatuses();
+        OperationResult result;
+        await _controllerGate.WaitAsync(cancellationToken).ConfigureAwait(false);
+        try
+        {
+            result = route.Data.Controller.Jog(route.Data.PhysicalAxisIndex, Math.Abs(speed), ToFoundationJogDirection(direction));
+            RefreshAxisStatusCore(axis);
+        }
+        finally
+        {
+            _controllerGate.Release();
+        }
+
         PublishStatus();
-        return Task.FromResult(failed.Count == 0 ? OperationResult.Ok("Composite motion stopped.") : ToOperationResult(failed[0]));
+        return ToOperationResult(result);
     }
 
     /// <inheritdoc />
-    public Task<OperationResult<MotionAxisStatus>> GetStatusAsync(MotionAxis axis, CancellationToken cancellationToken = default)
+    public async Task<OperationResult> StopAxisAsync(MotionAxis axis, CancellationToken cancellationToken = default)
     {
-        RefreshAxisStatus(axis);
-        return Task.FromResult(OperationResult<MotionAxisStatus>.Ok(_lastStatuses[axis]));
+        var route = ResolveRoute(axis);
+        if (!route.Success || route.Data is null)
+        {
+            return OperationResult.Error(route.Message, route.ResultCode);
+        }
+
+        OperationResult result;
+        await _controllerGate.WaitAsync(cancellationToken).ConfigureAwait(false);
+        try
+        {
+            result = route.Data.Controller.StopAxis(route.Data.PhysicalAxisIndex, StopMode.Halt);
+            RefreshAxisStatusCore(axis);
+        }
+        finally
+        {
+            _controllerGate.Release();
+        }
+
+        PublishStatus();
+        return ToOperationResult(result);
+    }
+
+    /// <inheritdoc />
+    public async Task<OperationResult> StopAsync(CancellationToken cancellationToken = default)
+    {
+        var failed = new List<OperationResult>();
+        await _controllerGate.WaitAsync(cancellationToken).ConfigureAwait(false);
+        try
+        {
+            foreach (var endpoint in configuration.Controllers)
+            {
+                if (!_controllers.TryGetValue(endpoint.Id, out var controller))
+                {
+                    continue;
+                }
+
+                for (var axisIndex = 0; axisIndex < endpoint.AxisCount; axisIndex++)
+                {
+                    OperationResult result = controller.StopAxis(axisIndex, StopMode.Halt);
+                    if (!result.Success)
+                    {
+                        failed.Add(result);
+                    }
+                }
+            }
+
+            RefreshAllStatusesCore();
+        }
+        finally
+        {
+            _controllerGate.Release();
+        }
+
+        PublishStatus();
+        return failed.Count == 0 ? OperationResult.Ok("Composite motion stopped.") : ToOperationResult(failed[0]);
+    }
+
+    /// <inheritdoc />
+    public async Task<OperationResult<MotionAxisStatus>> GetStatusAsync(MotionAxis axis, CancellationToken cancellationToken = default)
+    {
+        await _controllerGate.WaitAsync(cancellationToken).ConfigureAwait(false);
+        try
+        {
+            RefreshAxisStatusCore(axis);
+            return OperationResult<MotionAxisStatus>.Ok(_lastStatuses[axis]);
+        }
+        finally
+        {
+            _controllerGate.Release();
+        }
     }
 
     /// <inheritdoc />
@@ -153,6 +251,8 @@ public sealed class CompositeMotionControlCapability(MotionSystemConfiguration c
         {
             (controller as IDisposable)?.Dispose();
         }
+
+        _controllerGate.Dispose();
     }
 
     private OperationResult CreateController(MotionControllerEndpoint endpoint)
@@ -242,8 +342,19 @@ public sealed class CompositeMotionControlCapability(MotionSystemConfiguration c
         {
             while (await _statusTimer.WaitForNextTickAsync(cancellationToken).ConfigureAwait(false))
             {
-                RefreshAllStatuses();
-                PublishStatus();
+                if (await _controllerGate.WaitAsync(0, cancellationToken).ConfigureAwait(false))
+                {
+                    try
+                    {
+                        RefreshAllStatusesCore();
+                    }
+                    finally
+                    {
+                        _controllerGate.Release();
+                    }
+
+                    PublishStatus();
+                }
             }
         }
         catch (OperationCanceledException)
@@ -251,15 +362,15 @@ public sealed class CompositeMotionControlCapability(MotionSystemConfiguration c
         }
     }
 
-    private void RefreshAllStatuses()
+    private void RefreshAllStatusesCore()
     {
         foreach (var axis in _axisBindings.Keys)
         {
-            RefreshAxisStatus(axis);
+            RefreshAxisStatusCore(axis);
         }
     }
 
-    private void RefreshAxisStatus(MotionAxis axis)
+    private void RefreshAxisStatusCore(MotionAxis axis)
     {
         var route = ResolveRoute(axis);
         if (!route.Success || route.Data is null)
@@ -374,8 +485,19 @@ public sealed class CompositeMotionControlCapability(MotionSystemConfiguration c
         return result.Success ? OperationResult.Ok(result.Message, result.ResultCode) : OperationResult.Error(result.Message, result.ResultCode);
     }
 
+    private static JogDirection ToFoundationJogDirection(MotionJogDirection direction)
+    {
+        return direction == MotionJogDirection.Negative ? JogDirection.Negative : JogDirection.Positive;
+    }
+
     private static MotionControllerType ParseControllerType(string controllerType)
     {
+        if (string.Equals(controllerType, "HDX", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(controllerType, "HeidStar", StringComparison.OrdinalIgnoreCase))
+        {
+            return MotionControllerType.HeidStarGclib;
+        }
+
         return Enum.TryParse<MotionControllerType>(controllerType, ignoreCase: true, out var type)
             ? type
             : throw new InvalidOperationException($"Unsupported motion controller type '{controllerType}'.");

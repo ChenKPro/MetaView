@@ -21,18 +21,23 @@
                 <ColumnDefinition Width="220" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="116" />
+                <ColumnDefinition Width="260" />
             </Grid.ColumnDefinitions>
 
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <Border Width="30" Height="30" CornerRadius="3" BorderBrush="#2C6FA7" BorderThickness="1" Margin="0,0,12,0">
-                    <Border.Background>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                            <GradientStop Color="#76C1FF" Offset="0" />
-                            <GradientStop Color="#4CA7FF" Offset="1" />
-                        </LinearGradientBrush>
-                    </Border.Background>
-                    <TextBlock Text="M" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Foreground="#F1F6FA" />
+                <Border Width="30"
+                        Height="30"
+                        CornerRadius="3"
+                        BorderBrush="#203242"
+                        BorderThickness="1"
+                        Background="#101820"
+                        Margin="0,0,12,0">
+                    <Image Source="/MetaView.Presentation;component/Assets/metaview-u-sq.ico"
+                           Width="24"
+                           Height="24"
+                           Stretch="Uniform"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center" />
                 </Border>
                 <StackPanel>
                     <TextBlock Text="MeataView-Evo" FontSize="17" FontWeight="SemiBold" />
@@ -446,11 +451,36 @@
                 </Popup>
             </StackPanel>
 
-            <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                <Button Content="_" Style="{StaticResource WindowButton}" Click="Minimize_OnClick" />
-                <Button Content="[]" Style="{StaticResource WindowButton}" Click="MaximizeRestore_OnClick" />
-                <Button Content="X" Style="{StaticResource CloseWindowButton}" Click="Close_OnClick" />
-            </StackPanel>
+            <Grid Grid.Column="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="116" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Margin="0,0,10,0">
+                    <TextBlock x:Name="ClockText"
+                               Text="--:--:--"
+                               FontSize="12"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource BrushText}"
+                               TextAlignment="Right" />
+                    <TextBlock Text="Device ID: MV-HDX-001"
+                               FontSize="9"
+                               Foreground="{StaticResource BrushMuted}"
+                               TextAlignment="Right" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top">
+                    <Button Content="_" Style="{StaticResource WindowButton}" Click="Minimize_OnClick" />
+                    <Button Content="[]" Style="{StaticResource WindowButton}" Click="MaximizeRestore_OnClick" />
+                    <Button Content="X" Style="{StaticResource CloseWindowButton}" Click="Close_OnClick" />
+                </StackPanel>
+            </Grid>
         </Grid>
     </Border>
 </UserControl>

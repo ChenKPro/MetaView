@@ -6,7 +6,7 @@
         <SolidColorBrush x:Key="BrushBg" Color="#1A2733" />
         <SolidColorBrush x:Key="BrushPanel" Color="#28323A" />
         <SolidColorBrush x:Key="BrushPanel2" Color="#334553" />
-        <SolidColorBrush x:Key="BrushLine" Color="#293F52" />
+        <SolidColorBrush x:Key="BrushLine" Color="#203242" />
         <SolidColorBrush x:Key="BrushText" Color="#F1F6FA" />
         <SolidColorBrush x:Key="BrushMuted" Color="#9CB0C0" />
         <SolidColorBrush x:Key="BrushBlue" Color="#5AAEFF" />
@@ -136,7 +136,7 @@
         </Style>
         <Style x:Key="PanelBorder" TargetType="Border">
             <Setter Property="Background" Value="{StaticResource BrushPanelRaised}" />
-            <Setter Property="BorderBrush" Value="#30495D" />
+            <Setter Property="BorderBrush" Value="#273C4D" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="5" />
             <Setter Property="Effect">
@@ -186,7 +186,7 @@
                     </LinearGradientBrush>
                 </Setter.Value>
             </Setter>
-            <Setter Property="BorderBrush" Value="#33556E" />
+            <Setter Property="BorderBrush" Value="#294458" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="4" />
             <Setter Property="Padding" Value="10,8" />
@@ -205,7 +205,7 @@
                     </LinearGradientBrush>
                 </Setter.Value>
             </Setter>
-            <Setter Property="BorderBrush" Value="#304D64" />
+            <Setter Property="BorderBrush" Value="#263E51" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="3" />
             <Setter Property="Padding" Value="8,4" />
@@ -217,7 +217,7 @@
         </Style>
         <Style x:Key="SubtlePanel" TargetType="Border">
             <Setter Property="Background" Value="{StaticResource BrushPanelInset}" />
-            <Setter Property="BorderBrush" Value="#263B4D" />
+            <Setter Property="BorderBrush" Value="#203343" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="3" />
             <Setter Property="Padding" Value="10" />
@@ -254,7 +254,7 @@
             <Setter Property="Margin" Value="0,0,5,0" />
             <Setter Property="Background" Value="{StaticResource BrushButtonRaised}" />
             <Setter Property="Foreground" Value="{StaticResource BrushText}" />
-            <Setter Property="BorderBrush" Value="#304D64" />
+            <Setter Property="BorderBrush" Value="#263E51" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="Cursor" Value="Hand" />
             <Style.Triggers>
@@ -272,7 +272,7 @@
             <Setter Property="Width" Value="320" />
             <Setter Property="Padding" Value="14" />
             <Setter Property="Background" Value="#1D2831" />
-            <Setter Property="BorderBrush" Value="#304D64" />
+            <Setter Property="BorderBrush" Value="#263E51" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="4" />
             <Setter Property="Effect">
@@ -283,7 +283,7 @@
         </Style>
         <Style x:Key="PopupSectionHeader" TargetType="Border">
             <Setter Property="Background" Value="{StaticResource BrushHeaderChrome}" />
-            <Setter Property="BorderBrush" Value="#263B4D" />
+            <Setter Property="BorderBrush" Value="#203343" />
             <Setter Property="BorderThickness" Value="0,0,0,1" />
             <Setter Property="Padding" Value="10,6" />
             <Setter Property="Margin" Value="-14,-14,-14,12" />
@@ -293,7 +293,7 @@
         </Style>
         <Style x:Key="InsetGroup" TargetType="Border">
             <Setter Property="Background" Value="{StaticResource BrushPanelInset}" />
-            <Setter Property="BorderBrush" Value="#263B4D" />
+            <Setter Property="BorderBrush" Value="#203343" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="3" />
             <Setter Property="Padding" Value="10" />
@@ -318,7 +318,7 @@
         <Style TargetType="TextBox">
             <Setter Property="Background" Value="#151F28" />
             <Setter Property="Foreground" Value="{StaticResource BrushText}" />
-            <Setter Property="BorderBrush" Value="#263B4D" />
+            <Setter Property="BorderBrush" Value="#203343" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="MinHeight" Value="36" />
             <Setter Property="Padding" Value="9,6" />
@@ -356,7 +356,7 @@
         <Style TargetType="ComboBox">
             <Setter Property="Background" Value="#151F28" />
             <Setter Property="Foreground" Value="{StaticResource BrushText}" />
-            <Setter Property="BorderBrush" Value="#263B4D" />
+            <Setter Property="BorderBrush" Value="#203343" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="MinHeight" Value="36" />
             <Setter Property="Padding" Value="9,0" />
@@ -435,7 +435,7 @@
                                 <Border MinWidth="{TemplateBinding ActualWidth}"
                                         MaxHeight="{TemplateBinding MaxDropDownHeight}"
                                         Background="#151F28"
-                                        BorderBrush="#304D64"
+                                        BorderBrush="#263E51"
                                         BorderThickness="1"
                                         CornerRadius="3">
                                     <ScrollViewer Margin="2"
@@ -562,7 +562,7 @@
             <Setter Property="Margin" Value="2" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Background" Value="#25333C" />
-            <Setter Property="BorderBrush" Value="#304D64" />
+            <Setter Property="BorderBrush" Value="#263E51" />
         </Style>
         <Style x:Key="PresetRadioButton" TargetType="RadioButton">
             <Setter Property="Foreground" Value="{StaticResource BrushMuted}" />
@@ -575,7 +575,7 @@
                     <ControlTemplate TargetType="RadioButton">
                         <Border x:Name="Chrome"
                                 Background="#151F28"
-                                BorderBrush="#263B4D"
+                                BorderBrush="#203343"
                                 BorderThickness="1"
                                 CornerRadius="3"
                                 Padding="8,0">
@@ -602,7 +602,7 @@
         </Style>
         <Style x:Key="ReadoutPanel" TargetType="Border">
             <Setter Property="Background" Value="#141E26" />
-            <Setter Property="BorderBrush" Value="#263B4D" />
+            <Setter Property="BorderBrush" Value="#203343" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="3" />
             <Setter Property="Padding" Value="8,6" />
@@ -671,7 +671,7 @@
                                 <Border x:Name="SubMenuBorder"
                                         MinWidth="230"
                                         Background="#151F28"
-                                        BorderBrush="#304D64"
+                                        BorderBrush="#263E51"
                                         BorderThickness="1"
                                         Padding="0">
                                     <Border.Effect>
@@ -772,7 +772,7 @@
             <Setter Property="Padding" Value="12,7" />
             <Setter Property="Margin" Value="0,0,1,0" />
             <Setter Property="Background" Value="{StaticResource BrushButtonRaised}" />
-            <Setter Property="BorderBrush" Value="#263B4D" />
+            <Setter Property="BorderBrush" Value="#203343" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TabItem">
@@ -812,6 +812,7 @@
             </Style.Triggers>
         </Style>
 </ResourceDictionary>
+
 
 
 

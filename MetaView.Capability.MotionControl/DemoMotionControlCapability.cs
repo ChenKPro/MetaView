@@ -94,6 +94,37 @@ public sealed class DemoMotionControlCapability(IEventAggregator eventAggregator
     }
 
     /// <inheritdoc />
+    public Task<OperationResult> StartJogAsync(MotionAxis axis, double speed, MotionJogDirection direction, CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        _statuses[axis] = _statuses[axis] with
+        {
+            State = MotionAxisState.Moving,
+            IsMoving = true,
+            Position = _statuses[axis].Position + speed * Math.Sign((int)direction) * 0.1,
+            Message = $"Jogging {axis} {direction}"
+        };
+
+        PublishStatus();
+        return Task.FromResult(OperationResult.Ok("Demo jog started."));
+    }
+
+    /// <inheritdoc />
+    public Task<OperationResult> StopAxisAsync(MotionAxis axis, CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        _statuses[axis] = _statuses[axis] with
+        {
+            State = MotionAxisState.Stopped,
+            IsMoving = false,
+            Message = "Axis stopped."
+        };
+
+        PublishStatus();
+        return Task.FromResult(OperationResult.Ok("Axis stopped."));
+    }
+
+    /// <inheritdoc />
     public Task<OperationResult> StopAsync(CancellationToken cancellationToken = default)
     {
         foreach (var axis in _statuses.Keys.ToArray())

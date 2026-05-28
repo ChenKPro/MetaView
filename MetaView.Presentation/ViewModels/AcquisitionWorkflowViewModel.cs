@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
+using Microsoft.Win32;
 using MetaView.Core.Imaging.Brightfield;
 using MetaView.Core.Parameters;
 using MetaView.Presentation.Core;
@@ -36,6 +37,8 @@ public sealed class AcquisitionWorkflowViewModel : MetaView.Presentation.Infrast
     private int _totalFrames;
     private string _progressText = "Ready for live preview";
     private int _selectedStepIndex;
+    private bool _showAdvancedContent = true;
+    private bool _showSaveContent = true;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AcquisitionWorkflowViewModel" /> class.
@@ -88,6 +91,8 @@ public sealed class AcquisitionWorkflowViewModel : MetaView.Presentation.Infrast
         RunTaskCommand = new AsyncDelegateCommand(RunTaskAsync, CanRunTask);
         RunDemoWorkflowCommand = new AsyncDelegateCommand(RunDemoWorkflowAsync, CanRunDemoWorkflow);
         AbortCommand = new DelegateCommand(Abort, CanAbort);
+        BrowseSavePathCommand = new DelegateCommand(BrowseSavePath);
+        GenerateSaveNameCommand = new DelegateCommand(GenerateSaveName);
         RefreshRecipe();
     }
 
@@ -129,6 +134,8 @@ public sealed class AcquisitionWorkflowViewModel : MetaView.Presentation.Infrast
     public ICommand RunTaskCommand { get; }
     public ICommand RunDemoWorkflowCommand { get; }
     public ICommand AbortCommand { get; }
+    public ICommand BrowseSavePathCommand { get; }
+    public ICommand GenerateSaveNameCommand { get; }
 
     public ImagingModality SelectedModality
     {
@@ -157,8 +164,31 @@ public sealed class AcquisitionWorkflowViewModel : MetaView.Presentation.Infrast
     }
 
     public bool UseModal { get => _useModal; set { if (SetProperty(ref _useModal, value)) RefreshRecipe(); } }
-    public bool UseLargeArea { get => _useLargeArea; set { if (SetProperty(ref _useLargeArea, value)) RefreshRecipe(); } }
-    public bool Use3D { get => _use3D; set { if (SetProperty(ref _use3D, value)) RefreshRecipe(); } }
+    public bool UseLargeArea
+    {
+        get => _useLargeArea;
+        set
+        {
+            if (SetProperty(ref _useLargeArea, value))
+            {
+                RaisePropertyChanged(nameof(ShowScanSequence));
+                RefreshRecipe();
+            }
+        }
+    }
+
+    public bool Use3D
+    {
+        get => _use3D;
+        set
+        {
+            if (SetProperty(ref _use3D, value))
+            {
+                RaisePropertyChanged(nameof(ShowScanSequence));
+                RefreshRecipe();
+            }
+        }
+    }
     public bool UseTimeLapse { get => _useTimeLapse; set { if (SetProperty(ref _useTimeLapse, value)) RefreshRecipe(); } }
     public bool AutoSave { get => _autoSave; set { if (SetProperty(ref _autoSave, value)) RefreshRecipe(); } }
     public string SavePath { get => _savePath; set { if (SetProperty(ref _savePath, value)) RefreshRecipe(); } }
@@ -188,6 +218,9 @@ public sealed class AcquisitionWorkflowViewModel : MetaView.Presentation.Infrast
     }
     public string ProgressText { get => _progressText; set => SetProperty(ref _progressText, value); }
     public int SelectedStepIndex { get => _selectedStepIndex; set => SetProperty(ref _selectedStepIndex, value); }
+    public bool ShowAdvancedContent { get => _showAdvancedContent; set => SetProperty(ref _showAdvancedContent, value); }
+    public bool ShowSaveContent { get => _showSaveContent; set => SetProperty(ref _showSaveContent, value); }
+    public bool ShowScanSequence => UseLargeArea || Use3D;
     public bool IsBusy => State is AcquisitionState.LivePreview or AcquisitionState.Capturing or AcquisitionState.Acquiring;
     public string StateText => State.ToString();
     public string ValidationMessage => string.IsNullOrWhiteSpace(SaveName) ? "Save name is required" : "Recipe ready";
@@ -200,6 +233,31 @@ public sealed class AcquisitionWorkflowViewModel : MetaView.Presentation.Infrast
     public AcquisitionRecipe CreateRecipe()
     {
         return new AcquisitionRecipe(Scan.ToSettings(), SelectedModality, SavePath, SaveName, AutoSave, UseModal, UseLargeArea, Use3D, UseTimeLapse);
+    }
+
+    private void BrowseSavePath()
+    {
+        var dialog = new OpenFolderDialog
+        {
+            Title = "Select save folder",
+            InitialDirectory = string.IsNullOrWhiteSpace(SavePath)
+                ? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+                : SavePath
+        };
+
+        if (dialog.ShowDialog() == true)
+        {
+            SavePath = dialog.FolderName;
+        }
+    }
+
+    private void GenerateSaveName()
+    {
+        var feature = Use3D ? "3D" : UseLargeArea ? "LargeArea" : UseModal ? "Modal" : "Single";
+        var zoom = string.IsNullOrWhiteSpace(Scan.Zoom)
+            ? "Zoom"
+            : Scan.Zoom.Replace("/", "-").Replace(" ", string.Empty);
+        SaveName = $"{SelectedModality}-{feature}-{zoom}-{DateTime.Now:yyyyMMdd-HHmmss}";
     }
 
     private async Task StartLiveAsync()

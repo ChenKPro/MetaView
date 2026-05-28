@@ -4,6 +4,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace MetaView.Presentation.Views;
 
@@ -12,12 +13,22 @@ namespace MetaView.Presentation.Views;
 /// </summary>
 public partial class TopBarView : UserControl
 {
+    private readonly DispatcherTimer _clockTimer = new() { Interval = TimeSpan.FromSeconds(1) };
+
     /// <summary>
     /// Initializes a new instance of the <see cref="TopBarView" /> class.
     /// </summary>
     public TopBarView()
     {
         InitializeComponent();
+        UpdateClock();
+        _clockTimer.Tick += (_, _) => UpdateClock();
+        _clockTimer.Start();
+    }
+
+    private void UpdateClock()
+    {
+        ClockText.Text = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
     }
 
     private void DragSurface_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
