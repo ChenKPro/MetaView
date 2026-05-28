@@ -95,6 +95,7 @@ internal static class MetaViewContainerRegistration
         containerRegistry.RegisterSingleton<AcquisitionWorkflowViewModel>();
         containerRegistry.RegisterSingleton<HardwarePanelViewModel>();
         containerRegistry.RegisterSingleton<ImageWorkspaceViewModel>();
+        containerRegistry.RegisterSingleton<GalvoDaqScanSetupViewModel>();
         containerRegistry.RegisterSingleton<StatusBarViewModel>();
         containerRegistry.RegisterSingleton<WorkspaceSidePanelViewModel>();
         containerRegistry.RegisterSingleton<ShellViewModel>();

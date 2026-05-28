@@ -13,6 +13,8 @@ public sealed class RealtimeSignalImagingService : IRealtimeSignalImagingService
     private readonly IDataAcquisitionCapability _dataAcquisitionCapability;
     private readonly ISignalImagingProcessor _signalImagingProcessor;
     private readonly IEventAggregator _eventAggregator;
+    private ScanGridSettings _currentGridSettings = ScanGridSettings.Default;
+    private GalvoScanRuntimeConfiguration _currentGalvoSettings = new();
 
     public RealtimeSignalImagingService(
         IDataAcquisitionCapability dataAcquisitionCapability,
@@ -26,9 +28,21 @@ public sealed class RealtimeSignalImagingService : IRealtimeSignalImagingService
     }
 
     /// <inheritdoc />
+    public void SetGridSettings(ScanGridSettings settings)
+    {
+        _currentGridSettings = settings ?? ScanGridSettings.Default;
+    }
+
+    /// <inheritdoc />
+    public void SetGalvoScanSettings(GalvoScanRuntimeConfiguration settings)
+    {
+        _currentGalvoSettings = settings ?? new GalvoScanRuntimeConfiguration();
+    }
+
+    /// <inheritdoc />
     public void ProcessPacket(DaqSamplePacket packet, ScanGridSettings? settings = null)
     {
-        var result = _signalImagingProcessor.Process(packet, settings ?? ScanGridSettings.Default);
+        var result = _signalImagingProcessor.Process(packet, settings ?? _currentGridSettings, _currentGalvoSettings);
         _eventAggregator.GetEvent<SignalImageFramePublishedEvent>().Publish(result.ImageFrame);
         _eventAggregator.GetEvent<SignalTraceFramePublishedEvent>().Publish(result.TraceFrame);
     }
@@ -47,7 +61,7 @@ public sealed class RealtimeSignalImagingService : IRealtimeSignalImagingService
 
     private void OnSamplesReceived(object? sender, DaqSamplesReceivedEventArgs e)
     {
-        ProcessPacket(e.Packet);
+        ProcessPacket(e.Packet, _currentGridSettings);
     }
 
     private static DaqSamplePacket CreateDemoPacket()

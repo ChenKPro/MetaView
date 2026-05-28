@@ -9,6 +9,16 @@ namespace MetaView.Services.Interfaces;
 public interface IRealtimeSignalImagingService
 {
     /// <summary>
+    /// Sets the default grid used for live DAQ sample callbacks.
+    /// </summary>
+    void SetGridSettings(ScanGridSettings settings);
+
+    /// <summary>
+    /// Sets the synchronized galvo scan settings used for frame reconstruction.
+    /// </summary>
+    void SetGalvoScanSettings(GalvoScanRuntimeConfiguration settings);
+
+    /// <summary>
     /// Processes one DAQ sample packet and publishes derived UI frames.
     /// </summary>
     void ProcessPacket(DaqSamplePacket packet, ScanGridSettings? settings = null);

@@ -25,7 +25,8 @@ public sealed class JsonRuntimeParameterProvider : IRuntimeParameterProvider
     {
         PropertyNameCaseInsensitive = true,
         ReadCommentHandling = JsonCommentHandling.Skip,
-        AllowTrailingCommas = true
+        AllowTrailingCommas = true,
+        WriteIndented = true
     };
 
     private DeviceConfigurationDocument? _document;
@@ -105,7 +106,9 @@ public sealed class JsonRuntimeParameterProvider : IRuntimeParameterProvider
     {
         lock (_syncRoot)
         {
+            LoadDocumentIfNeeded();
             _daqRuntimeConfiguration = configuration;
+            SaveDocument((_document ?? new DeviceConfigurationDocument()) with { Daq = configuration });
         }
 
         return OperationResult.Ok("DAQ runtime configuration updated.");
@@ -172,6 +175,19 @@ public sealed class JsonRuntimeParameterProvider : IRuntimeParameterProvider
         var json = File.ReadAllText(_configurationPath);
         _document = JsonSerializer.Deserialize<DeviceConfigurationDocument>(json, _jsonOptions)
             ?? new DeviceConfigurationDocument();
+    }
+
+    private void SaveDocument(DeviceConfigurationDocument document)
+    {
+        _document = document;
+        var directory = Path.GetDirectoryName(_configurationPath);
+        if (!string.IsNullOrWhiteSpace(directory))
+        {
+            Directory.CreateDirectory(directory);
+        }
+
+        var json = JsonSerializer.Serialize(document, _jsonOptions);
+        File.WriteAllText(_configurationPath, json);
     }
 
     private static string ResolveConfigurationPath(string configurationPath)

@@ -11,4 +11,12 @@ public interface ISignalImagingProcessor
     /// Processes one DAQ sample packet using AI0/AI1 as XY position and AI2/AI3 as laser signal.
     /// </summary>
     SignalImagingResult Process(DaqSamplePacket packet, ScanGridSettings settings);
+
+    /// <summary>
+    /// Processes one DAQ sample packet using the synchronized galvo scan reconstruction settings.
+    /// </summary>
+    SignalImagingResult Process(
+        DaqSamplePacket packet,
+        ScanGridSettings settings,
+        GalvoScanRuntimeConfiguration galvoSettings);
 }

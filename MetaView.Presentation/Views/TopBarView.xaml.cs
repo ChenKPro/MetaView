@@ -5,6 +5,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using MetaView.Presentation.ViewModels;
 
 namespace MetaView.Presentation.Views;
 
@@ -14,12 +15,15 @@ namespace MetaView.Presentation.Views;
 public partial class TopBarView : UserControl
 {
     private readonly DispatcherTimer _clockTimer = new() { Interval = TimeSpan.FromSeconds(1) };
+    private readonly GalvoDaqScanSetupViewModel _galvoDaqScanSetup;
+    private GalvoDaqScanSetupWindow? _galvoDaqScanSetupWindow;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TopBarView" /> class.
     /// </summary>
-    public TopBarView()
+    public TopBarView(GalvoDaqScanSetupViewModel galvoDaqScanSetup)
     {
+        _galvoDaqScanSetup = galvoDaqScanSetup;
         InitializeComponent();
         UpdateClock();
         _clockTimer.Tick += (_, _) => UpdateClock();
@@ -74,6 +78,22 @@ public partial class TopBarView : UserControl
     private void Close_OnClick(object sender, RoutedEventArgs e)
     {
         Window.GetWindow(this)?.Close();
+    }
+
+    private void GalvoDaqScanSetup_OnClick(object sender, RoutedEventArgs e)
+    {
+        if (_galvoDaqScanSetupWindow is { IsVisible: true })
+        {
+            _galvoDaqScanSetupWindow.Activate();
+            return;
+        }
+
+        _galvoDaqScanSetupWindow = new GalvoDaqScanSetupWindow(_galvoDaqScanSetup)
+        {
+            Owner = Window.GetWindow(this)
+        };
+        _galvoDaqScanSetupWindow.Closed += (_, _) => _galvoDaqScanSetupWindow = null;
+        _galvoDaqScanSetupWindow.Show();
     }
 
     private static void ToggleWindowState(Window window)

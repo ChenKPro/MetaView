@@ -87,6 +87,7 @@
                     <MenuItem Header="Live Preview" />
                     <MenuItem Header="Single Capture" />
                     <MenuItem Header="SRS / Hyperspectral" />
+                    <MenuItem Header="Galvo / DAQ Scan Setup" Click="GalvoDaqScanSetup_OnClick" />
                     <MenuItem Header="TPEF" />
                     <MenuItem Header="DC Brightfield" />
                     <Separator />

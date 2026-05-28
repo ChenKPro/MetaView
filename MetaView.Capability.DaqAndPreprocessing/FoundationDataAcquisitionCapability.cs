@@ -1,4 +1,5 @@
-﻿using MetaView.Core.DataAcquisition;
+using MetaView.Capability.DaqAndPreprocessing.GalvoScan;
+using MetaView.Core.DataAcquisition;
 using Vibronix.Foundation.Common.Results;
 using Vibronix.Foundation.Hardware.DAQ;
 using Vibronix.Foundation.Hardware.DAQ.Abstractions;
@@ -31,6 +32,11 @@ public sealed class FoundationDataAcquisitionCapability : IDataAcquisitionCapabi
             return OperationResult.Ok("Demo DAQ mode selected.");
         }
 
+        if (configuration.GalvoScan.Enabled)
+        {
+            return ConfigureGalvoScan(configuration.GalvoScan);
+        }
+
         if (string.IsNullOrWhiteSpace(configuration.ConfigurationPath))
         {
             return OperationResult.Error("DAQ configuration path is required.");
@@ -40,7 +46,7 @@ public sealed class FoundationDataAcquisitionCapability : IDataAcquisitionCapabi
             .LoadFromJsonAsync(configuration.ConfigurationPath, cancellationToken)
             .ConfigureAwait(false);
 
-        _daq?.Dispose();
+        DisposeDaq();
         _daq = new DaqFactory().Create(deviceConfiguration.Type);
         _daq.DataReceived += OnDataReceived;
 
@@ -70,7 +76,14 @@ public sealed class FoundationDataAcquisitionCapability : IDataAcquisitionCapabi
             return Task.FromResult(OperationResult.Ok("Demo DAQ acquisition stopped."));
         }
 
-        return Task.FromResult(_daq.Stop());
+        var daq = _daq;
+        _daq = null;
+        daq.DataReceived -= OnDataReceived;
+
+        var result = daq.Stop();
+        daq.Dispose();
+        IsConfigured = false;
+        return Task.FromResult(result);
     }
 
     /// <inheritdoc />
@@ -106,10 +119,38 @@ public sealed class FoundationDataAcquisitionCapability : IDataAcquisitionCapabi
     /// <inheritdoc />
     public void Dispose()
     {
-        if (_daq is not null)
+        DisposeDaq();
+    }
+
+    private OperationResult ConfigureGalvoScan(GalvoScanRuntimeConfiguration settings)
+    {
+        try
         {
-            _daq.DataReceived -= OnDataReceived;
-            _daq.Dispose();
+            var waveformSettings = CreateSingleFrameWaveformSettings(settings);
+            var waveform = GalvoScanWaveformGenerator.Generate(waveformSettings);
+            var deviceConfiguration = BuildGalvoScanDeviceConfiguration(settings, waveform.TotalSampleCount);
+
+            DisposeDaq();
+            _daq = new DaqFactory().Create(ParseEnum<DaqType>(settings.DaqType));
+            _daq.DataReceived += OnDataReceived;
+
+            var configureResult = _daq.Configure(deviceConfiguration);
+            if (!configureResult.Success)
+            {
+                IsConfigured = false;
+                return configureResult;
+            }
+
+            var writeResult = _daq.WriteAnalogSamples([waveform.XSamples, waveform.YSamples]);
+            IsConfigured = writeResult.Success;
+            return writeResult.Success
+                ? OperationResult.Ok($"Galvo DAQ configured. Samples={waveform.TotalSampleCount}.")
+                : writeResult;
+        }
+        catch (Exception ex)
+        {
+            IsConfigured = false;
+            return OperationResult.Error(ex.Message);
         }
     }
 
@@ -123,5 +164,142 @@ public sealed class FoundationDataAcquisitionCapability : IDataAcquisitionCapabi
             e.Batch.TaskName);
 
         SamplesReceived?.Invoke(this, new DaqSamplesReceivedEventArgs(packet));
+    }
+
+    private static DaqDeviceConfiguration BuildGalvoScanDeviceConfiguration(
+        GalvoScanRuntimeConfiguration settings,
+        int totalSamples)
+    {
+        var daqType = ParseEnum<DaqType>(settings.DaqType);
+        var terminal = ParseEnum<TerminalConfiguration>(settings.InputTerminalConfiguration);
+
+        return new DaqDeviceConfiguration
+        {
+            Type = daqType,
+            DeviceName = settings.DeviceName,
+            Tasks =
+            [
+                new DaqTaskConfiguration
+                {
+                    Name = "GALVO_AI",
+                    TaskType = DaqTaskType.AnalogInput,
+                    SampleRate = settings.SampleRate,
+                    SamplesPerCallback = totalSamples,
+                    Continuous = true,
+                    Channels =
+                    [
+                        CreateAiChannel("AI0_X", settings.PositionXInputChannel, settings, terminal),
+                        CreateAiChannel("AI1_Y", settings.PositionYInputChannel, settings, terminal),
+                        CreateAiChannel("AI2_Laser", settings.SignalAInputChannel, settings, terminal),
+                        CreateAiChannel("AI3_Laser", settings.SignalBInputChannel, settings, terminal)
+                    ]
+                },
+                new DaqTaskConfiguration
+                {
+                    Name = "GALVO_AO",
+                    TaskType = DaqTaskType.AnalogOutput,
+                    SampleRate = settings.SampleRate,
+                    SamplesPerCallback = totalSamples,
+                    Continuous = true,
+                    ClockSource = settings.AnalogOutputClockSource,
+                    StartTriggerSource = settings.AnalogOutputStartTriggerSource,
+                    Channels =
+                    [
+                        new DaqChannel(
+                            "AO_X",
+                            settings.AnalogOutputXChannel,
+                            DaqSignalType.AnalogVoltageOutput,
+                            settings.VoltageMinimum,
+                            settings.VoltageMaximum,
+                            "V"),
+                        new DaqChannel(
+                            "AO_Y",
+                            settings.AnalogOutputYChannel,
+                            DaqSignalType.AnalogVoltageOutput,
+                            settings.VoltageMinimum,
+                            settings.VoltageMaximum,
+                            "V")
+                    ]
+                }
+            ]
+        };
+    }
+
+    private static DaqChannel CreateAiChannel(
+        string name,
+        string physicalChannel,
+        GalvoScanRuntimeConfiguration settings,
+        TerminalConfiguration terminal)
+    {
+        return new DaqChannel(
+            name,
+            physicalChannel,
+            DaqSignalType.AnalogVoltageInput,
+            settings.VoltageMinimum,
+            settings.VoltageMaximum,
+            "V",
+            terminal);
+    }
+
+    private static TEnum ParseEnum<TEnum>(string value)
+        where TEnum : struct
+    {
+        return Enum.TryParse<TEnum>(value, ignoreCase: true, out var result)
+            ? result
+            : throw new InvalidOperationException($"Unsupported {typeof(TEnum).Name}: {value}");
+    }
+
+    private static GalvoScanRuntimeConfiguration CreateSingleFrameWaveformSettings(GalvoScanRuntimeConfiguration settings)
+    {
+        return new GalvoScanRuntimeConfiguration
+        {
+            Enabled = settings.Enabled,
+            DaqType = settings.DaqType,
+            DeviceName = settings.DeviceName,
+            AnalogOutputXChannel = settings.AnalogOutputXChannel,
+            AnalogOutputYChannel = settings.AnalogOutputYChannel,
+            PositionXInputChannel = settings.PositionXInputChannel,
+            PositionYInputChannel = settings.PositionYInputChannel,
+            SignalAInputChannel = settings.SignalAInputChannel,
+            SignalBInputChannel = settings.SignalBInputChannel,
+            InputTerminalConfiguration = settings.InputTerminalConfiguration,
+            AnalogOutputClockSource = settings.AnalogOutputClockSource,
+            AnalogOutputStartTriggerSource = settings.AnalogOutputStartTriggerSource,
+            ScanMode = settings.ScanMode,
+            ImageWidth = settings.ImageWidth,
+            ImageHeight = settings.ImageHeight,
+            XExtraPixels = settings.XExtraPixels,
+            FrameCount = 1,
+            SampleRate = settings.SampleRate,
+            SamplesPerPixel = settings.SamplesPerPixel,
+            CenterXVoltage = settings.CenterXVoltage,
+            CenterYVoltage = settings.CenterYVoltage,
+            AmplitudeXVoltage = settings.AmplitudeXVoltage,
+            AmplitudeYVoltage = settings.AmplitudeYVoltage,
+            XFeedbackScale = settings.XFeedbackScale,
+            YFeedbackScale = settings.YFeedbackScale,
+            VoltageMinimum = settings.VoltageMinimum,
+            VoltageMaximum = settings.VoltageMaximum,
+            FillFraction = settings.FillFraction,
+            RetraceRatio = settings.RetraceRatio,
+            BidirectionalPhaseSamples = settings.BidirectionalPhaseSamples,
+            DetectorSampleOffsetSamples = settings.DetectorSampleOffsetSamples,
+            EnableSlewLimit = settings.EnableSlewLimit,
+            MaxSlewRateVoltsPerSecond = settings.MaxSlewRateVoltsPerSecond,
+            RampMilliseconds = settings.RampMilliseconds,
+            Continuous = settings.Continuous
+        };
+    }
+
+    private void DisposeDaq()
+    {
+        if (_daq is null)
+        {
+            return;
+        }
+
+        _daq.DataReceived -= OnDataReceived;
+        _daq.Dispose();
+        _daq = null;
     }
 }

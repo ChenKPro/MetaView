@@ -36,8 +36,38 @@
     ]
   },
   "daq": {
-    "useDemo": true,
-    "configurationPath": ""
+    "useDemo": false,
+    "configurationPath": "",
+    "galvoScan": {
+      "enabled": true,
+      "daqType": "NationalInstruments",
+      "deviceName": "Dev1",
+      "analogOutputXChannel": "Dev1/ao0",
+      "analogOutputYChannel": "Dev1/ao1",
+      "positionXInputChannel": "Dev1/ai0",
+      "positionYInputChannel": "Dev1/ai1",
+      "signalAInputChannel": "Dev1/ai2",
+      "signalBInputChannel": "Dev1/ai3",
+      "inputTerminalConfiguration": "Differential",
+      "analogOutputClockSource": "/Dev1/ai/SampleClock",
+      "analogOutputStartTriggerSource": "/Dev1/ai/StartTrigger",
+      "scanMode": "UnidirectionalRaster",
+      "imageWidth": 100,
+      "imageHeight": 100,
+      "frameCount": 1,
+      "sampleRate": 20000,
+      "samplesPerPixel": 2,
+      "centerXVoltage": 0,
+      "centerYVoltage": 0,
+      "amplitudeXVoltage": 1,
+      "amplitudeYVoltage": 1,
+      "voltageMinimum": -10,
+      "voltageMaximum": 10,
+      "fillFraction": 0.8,
+      "retraceRatio": 0.25,
+      "rampMilliseconds": 0,
+      "continuous": true
+    }
   },
   "brightfieldCamera": {
     "cameraType": "HaiKang",
